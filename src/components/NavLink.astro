@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+const { pathname } = Astro.url;
+
+type Props = {
+  href: string;
+} & HTMLAttributes<"a">;
+const { class: className, href, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    className,
+    { "border-b-[3px] border-red-500": href === pathname },
+  ]}><slot /></a
+>
