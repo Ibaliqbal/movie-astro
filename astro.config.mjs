@@ -1,21 +1,18 @@
 import { defineConfig, passthroughImageService } from "astro/config";
-import tailwind from "@astrojs/tailwind";
 
-import node from "@astrojs/node";
+import tailwind from "@astrojs/tailwind";
+import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
   image: {
-    remotePatterns: [{
-      protocol: "https",
-      hostname: "image.tmdb.org"
-    }],
+    remotePatterns: [{ protocol: "https", hostname: "image.tmdb.org" }],
     domains: ["image.tmdb.org"],
-    service: passthroughImageService()
+    service: passthroughImageService(),
   },
   integrations: [tailwind()],
   output: "server",
-  adapter: node({
-    mode: "standalone"
-  })
+  adapter: vercel({
+    imageService: true,
+  }),
 });
