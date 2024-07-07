@@ -9,7 +9,7 @@ const { original_title, id, overview, poster_path } = Astro.props;
 <article class="w-full">
   <a href={`/movie/${id}`}>
     <Image
-      src={import.meta.env.PUBLIC_TMDB_IMG_URL + poster_path}
+      src={`https://image.tmdb.org/t/p/w500${poster_path}`}
       alt="Poster"
       inferSize
       class="w-full"
