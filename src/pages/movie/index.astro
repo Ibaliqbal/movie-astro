@@ -1,0 +1,10 @@
+---
+const { searchParams } = Astro.url;
+const page = searchParams.get("page");
+const genre = searchParams.get("genre");
+
+console.log(page);
+console.log(genre);
+---
+
+<h1>Ini page movie lists</h1>

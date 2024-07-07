@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from "astro/types";
+type Props = HTMLAttributes<"aside">;
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<aside
+  class:list={["col-span-1 w-full h-dvh bg-blue-400 sticky top-2", className]}
+  {...rest}
+>
+  <slot />
+</aside>

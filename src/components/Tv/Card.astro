@@ -1,0 +1,47 @@
+---
+import type { Tv } from "@/types/tv";
+import { Image } from "astro:assets";
+import { format } from "date-fns";
+type Props = Tv;
+
+const { original_name, id, poster_path, first_air_date } = Astro.props;
+---
+
+<article
+  class="w-full card flex flex-col h-full rounded-md"
+  transition:name={`tv ${id} card`}
+>
+  <a href={`/tv/${id}`} class="flex flex-col h-full">
+    {
+      poster_path === undefined || poster_path === null ? (
+        <div class="w-full aspect-[1/1.5] rounded-t-md" />
+      ) : (
+        <Image
+          src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+          alt="Poster"
+          inferSize
+          class="w-full aspect-auto rounded-t-md"
+          transition:name={`tv ${id} poster`}
+        />
+      )
+    }
+    <div class="p-3 flex-grow">
+      <h1 transition:name={`tv ${id} title`} class="text-lg">
+        {original_name}
+      </h1>
+      <p transition:name={`tv ${id} date`}>
+        {format(first_air_date, "MMMM dd, yyyy")}
+      </p>
+    </div>
+  </a>
+</article>
+<style>
+  .card {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    min-height: 300px;
+  }
+</style>

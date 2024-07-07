@@ -1,0 +1,13 @@
+---
+type Props = {
+  lists: Array<Genre>;
+};
+
+const { searchParams } = Astro.url;
+
+const genre = searchParams.get("genre");
+
+const { lists } = Astro.props;
+---
+
+<ul class="w-full bg-red-500 py-3 px-2">hello</ul>

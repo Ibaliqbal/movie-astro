@@ -45,7 +45,7 @@ export interface SpokenLanguage {
   name: string;
 }
 
-export type Detail = {
+export type MDetail = {
   adult: boolean;
   backdrop_path: string;
   belongs_to_collection: BelongsToCollection;

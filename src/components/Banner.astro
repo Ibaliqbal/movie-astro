@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets";
+
+type Props = {
+  poster: string;
+};
+
+const { poster } = Astro.props;
+---
+
+<div class="relative">
+  <Image
+    src={`${import.meta.env.PUBLIC_TMDB_IMG_URL_ORIGINAL_SIZE}${poster}`}
+    alt={"Banner"}
+    inferSize
+    class="w-full aspect-[1/.35] object-cover object-center"
+    quality={"max"}
+    format="jpeg"
+  />
+  <span
+    class="absolute font-bold text-white top-5 left-5 text-lg cursor-pointer mix-blend-difference"
+    id="btnBack">Back</span
+  >
+</div>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    document.getElementById("btnBack")?.addEventListener("click", () => {
+      history.back();
+    });
+  });
+</script>

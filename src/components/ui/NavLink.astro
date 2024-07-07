@@ -13,6 +13,6 @@ const { class: className, href, ...rest } = Astro.props;
   href={href}
   class:list={[
     className,
-    { "border-b-[3px] border-red-500": href === pathname },
+    { "border-b-[4px] border-blue-600": href === pathname },
   ]}><slot /></a
 >

@@ -1,19 +1,17 @@
 ---
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "@/components/Navbar.astro";
-import SidebarLayout from "./SidebarLayout.astro";
-import { getGenres } from "@/utils/data";
-import ListGenre from "@/components/Genre/List.astro";
+import Banner from "@/components/Banner.astro";
 
 interface Props {
   title: string;
   description: string;
-  typeGenre: "movie" | "tv";
+  poster: string;
+  name_transition: string;
+  id: string;
 }
 
-const { title, description, typeGenre } = Astro.props;
-
-const genres: Array<Genre> = await getGenres(typeGenre);
+const { title, description, poster, name_transition, id } = Astro.props;
 ---
 
 <!doctype html>
@@ -25,16 +23,20 @@ const genres: Array<Genre> = await getGenres(typeGenre);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <ViewTransitions />
+    <ViewTransitions fallback="none" />
   </head>
   <body class="bg-black bg-opacity-95 text-white">
-    <Navbar />
+    {
+      poster === undefined || poster === null ? (
+        <div class="w-full aspect-[1/.3] bg-slate-500 bg-opacity-45" />
+      ) : (
+        <Banner poster={poster} />
+      )
+    }
     <main
-      class="max-w-layout w-full container grid grid-cols-5 gap-3 pb-10 pt-8"
+      class="max-w-layout w-full container pb-10"
+      transition:name={`${name_transition} ${id} card`}
     >
-      <SidebarLayout class="p-2">
-        <slot name="main-sidebar" />
-      </SidebarLayout>
       <slot />
     </main>
   </body>

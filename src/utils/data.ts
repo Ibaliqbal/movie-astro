@@ -1,8 +1,16 @@
 const apiKey = import.meta.env.PUBLIC_TMDB_KEY;
 const token = import.meta.env.PUBLIC_TMDB_TOKEN;
-export async function getDiscoverMovie() {
+const url = import.meta.env.PUBLIC_API_URL;
+const options = {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Autorization: `Bearer ${token}`,
+  },
+};
+export async function getDiscover(type: string, genre: number, page: number) {
   const res = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`,
+    `${url}/discover/${type}?api_key=${apiKey}&page=${page}&with_genres=${genre}`,
     {
       method: "GET",
       headers: {
@@ -17,17 +25,36 @@ export async function getDiscoverMovie() {
   return result;
 }
 
-export async function getDetailMovie(id: string) {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}`,
-    {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Autorization: `Bearer ${token}`,
-      },
-    }
-  );
+export async function getDetail(type: "movie" | "tv", id: string) {
+  const res = await fetch(`${url}/${type}/${id}?api_key=${apiKey}`, {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Autorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await res.json();
+
+  return result;
+}
+
+export async function getGenres(type: "movie" | "tv") {
+  const res = await fetch(`${url}/genre/${type}/list?api_key=${apiKey}`, {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Autorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await res.json();
+
+  return result.genres;
+}
+
+export async function getPopularDatas(type: "movie" | "tv") {
+  const res = await fetch(`${url}/${type}/popular?api_key=${apiKey}`, options);
 
   const result = await res.json();
 

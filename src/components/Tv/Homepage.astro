@@ -1,0 +1,67 @@
+---
+import type { Tv } from "@/types/tv";
+import { getDiscover, getPopularDatas } from "@/utils/data";
+import Link from "@/components/ui/Link.astro";
+import Card from "./Card.astro";
+
+type Props = {
+  genreTv: number;
+};
+
+const { genreTv } = Astro.props;
+
+const popular = await getPopularDatas("tv");
+const movies_popular = popular.results.filter(
+  (movie: Tv) =>
+    typeof movie.poster_path === "string" &&
+    typeof movie.backdrop_path === "string"
+) as TvLists;
+
+const popularIds = new Set(movies_popular.map((movie) => movie.id));
+
+const discover = await getDiscover("tv", genreTv, 1);
+const movies_discover = discover.results
+  .filter(
+    (movie: Tv) =>
+      typeof movie.poster_path === "string" &&
+      typeof movie.backdrop_path === "string"
+  )
+  .filter((movie: Tv) => !popularIds.has(movie.id)) as TvLists;
+---
+
+<main class="flex flex-col gap-7">
+  <section class="w-full">
+    <div class="w-full flex justify-between items-center">
+      <h1 class="text-2xl font-bold">List Tv Popular</h1>
+      <Link
+        href={`/popular/tv?page=1`}
+        class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"
+        >See more</Link
+      >
+    </div>
+    <section class="w-full mt-3 grid grid-cols-4 gap-4">
+      {movies_popular.map((movie) => <Card {...movie} />)}
+    </section>
+  </section>
+  <section class="w-full">
+    <div class="w-full flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Tv Lists ( Animation )</h1>
+      <Link
+        href={`/tv?genre=${genreTv}&page=1`}
+        class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"
+        >See more</Link
+      >
+    </div>
+    <section
+      class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-4"
+    >
+      {
+        movies_discover.map((movie) => (
+          <div class="w-1/4 flex-shrink-0">
+            <Card {...movie} />
+          </div>
+        ))
+      }
+    </section>
+  </section>
+</main>

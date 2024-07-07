@@ -1,0 +1,9 @@
+---
+const { searchParams } = Astro.url;
+
+const page = searchParams.get("page");
+
+const { slug } = Astro.params;
+---
+
+<h1>{slug} Tv page = {page}</h1>
