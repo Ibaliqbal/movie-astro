@@ -1,0 +1,14 @@
+---
+import Logo from "@/images/Logo.png";
+import { Image } from "astro:assets";
+import Link from "@/components/Link.astro";
+---
+
+<header class="w-full flex justify-between bg-yellow-500 px-6 items-center">
+  <Image src={Logo} alt={"Logo"} width={70} height={70} />
+  <nav class="bg-blue-500 font-bold text-xl">
+    <ul>
+      <li><Link href={"/"}>Home</Link></li>
+    </ul>
+  </nav>
+</header>

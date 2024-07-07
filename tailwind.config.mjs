@@ -5,7 +5,10 @@ export default {
     extend: {
       container: {
         center: true,
-        padding: "1rem",
+        padding: ".5rem",
+      },
+      maxWidth: {
+        layout: "1500px",
       },
     },
   },
