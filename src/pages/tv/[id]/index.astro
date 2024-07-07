@@ -3,6 +3,8 @@ import DetailLayout from "@/layouts/DetailLayout.astro";
 import { Image } from "astro:assets";
 import { getDetail } from "@/utils/data";
 
+export const prerender = false;
+
 const { id } = Astro.params;
 
 const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
