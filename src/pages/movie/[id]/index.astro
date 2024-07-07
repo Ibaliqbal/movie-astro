@@ -4,7 +4,6 @@ import { Image } from "astro:assets";
 import { getDetail } from "@/utils/data";
 
 export const prerender = false;
-
 const { id } = Astro.params;
 
 const data = (await getDetail("movie", (id as string) ?? "")) as DetailMovie;
