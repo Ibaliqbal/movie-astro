@@ -5,6 +5,8 @@ import ListGenre from "@/components/Genre/List.astro";
 import HomepageMovie from "@/components/Movie/Homepage.astro";
 import HomepageTv from "@/components/Tv/Homepage.astro";
 
+export const prerender = false;
+
 const genreMovie = 28;
 const genreTv = 16;
 
@@ -14,11 +16,7 @@ console.log(genreListMovies);
 console.log(genreListTv);
 ---
 
-<Layout
-  title="Welcome to Astro."
-  description="List all movies use API TMDB"
-  typeGenre="movie"
->
+<Layout title="Welcome to Astro." description="List all movies use API TMDB">
   <section class="w-full" slot="main-sidebar">
     <ListGenre lists={genreListMovies} />
     <ListGenre lists={genreListTv} />

@@ -8,12 +8,9 @@ import ListGenre from "@/components/Genre/List.astro";
 interface Props {
   title: string;
   description: string;
-  typeGenre: "movie" | "tv";
 }
 
-const { title, description, typeGenre } = Astro.props;
-
-const genres: Array<Genre> = await getGenres(typeGenre);
+const { title, description } = Astro.props;
 ---
 
 <!doctype html>
