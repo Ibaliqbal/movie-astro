@@ -7,7 +7,7 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
   image: {
     remotePatterns: [{ protocol: "https" }],
-    domains: ["image.tmdb.org"],
+    domains: ["astro.build"],
   },
   integrations: [tailwind()],
   output: "server",
