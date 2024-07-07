@@ -11,7 +11,7 @@ export default defineConfig({
     service: passthroughImageService(),
   },
   integrations: [tailwind()],
-  output: "server",
+  output: "hybrid",
   adapter: vercel({
     imageService: true,
   }),
