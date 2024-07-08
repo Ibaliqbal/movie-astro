@@ -1,12 +1,12 @@
 ---
-import type { Movie } from "@/types/movie";
+import { getGenres, getSimiliarDatas, getDetail } from "@/utils/data";
+import type { Tv } from "@/types/tv";
 import Layout from "@/layouts/Layout.astro";
-import List from "@/components/Genre/List.astro";
-import { movieListsTopic } from "@/utils/constant";
-import { getGenres, getDatas } from "@/utils/data";
-import Card from "@/components/Movie/Card.astro";
+import Card from "@/components/Tv/Card.astro";
 import Link from "@/components/ui/Link.astro";
-
+import { tvListsTopic } from "@/utils/constant";
+import List from "@/components/Genre/List.astro";
+import FormSearch from "@/components/React/FormSearch";
 export const prerender = false;
 
 const { searchParams } = Astro.url;
@@ -15,33 +15,33 @@ const page = searchParams.get("page");
 
 if (!page) return Astro.redirect("/");
 
-const { slug } = Astro.params;
+const { id } = Astro.params;
 
-const genreListMovies: Array<Genre> = await getGenres("movie");
-const datas = await getDatas("movie", slug as string, Number(page));
+const genreListTv: Array<Genre> = await getGenres("tv");
+const detailShow = (await getDetail("tv", id as string)) as Tv;
+const datas = await getSimiliarDatas("tv", id as string, Number(page));
 
-const movies = datas.results.filter(
-  (movie: Movie) =>
-    typeof movie.poster_path === "string" &&
-    typeof movie.backdrop_path === "string"
-) as Movies;
-
-const nameSlug = slug
-  ?.replace("_", " ")
-  .split(" ")
-  .map((str: any) => str.charAt(0).toUpperCase() + str.slice(1))
-  .join(" ");
+const shows = datas.results.filter(
+  (list: Tv) =>
+    typeof list.poster_path === "string" &&
+    typeof list.backdrop_path === "string"
+) as TvLists;
 ---
 
-<Layout description="" title={`Movie ~ ${nameSlug}`}
+<Layout description="" title={`Similar Movies ~ "${detailShow.original_name}"`}
   ><section class="w-full" slot="main-sidebar">
     <h1 class="mb-3 text-xl font-bold">Movies</h1>
-    <List lists={genreListMovies} type="movie" customLists={movieListsTopic} />
+    <div class="px-3">
+      <FormSearch type="tv" client:load />
+    </div>
+    <List lists={genreListTv} type="tv" customLists={tvListsTopic} />
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">
-    <h1 class="font-bold text-2xl">{nameSlug}</h1>
+    <h1 class="font-bold text-2xl">
+      Similar Movies based "{detailShow.original_name}"
+    </h1>
     <section class="w-full mt-3 grid grid-cols-4 gap-4">
-      {movies.map((movie) => <Card {...movie} />)}
+      {shows.map((list) => <Card {...list} />)}
     </section>
     <div class="flex w-full justify-between items-center">
       <h3 class="font-semibold text-lg">{datas.page} of {datas.total_pages}</h3>
@@ -50,7 +50,7 @@ const nameSlug = slug
           Number(page) === 1 || Number(page) < 0 ? null : (
             <Link
               class="px-6 py-3 bg-slate-800 rounded-md"
-              href={`/${slug}/movie?page=${Number(page) - 1}`}
+              href={`/tv/${id}/similar?page=${Number(page) - 1}`}
             >
               Prev
             </Link>
@@ -60,7 +60,7 @@ const nameSlug = slug
           datas.total_pages > 500 ? (
             Number(page) === 500 ? null : (
               <Link
-                href={`/${slug}/movie?page=${Number(page) + 1}`}
+                href={`/tv/${id}/similar?page=${Number(page) + 1}`}
                 class="px-6 py-3 bg-slate-800 rounded-md"
               >
                 Next
@@ -68,7 +68,7 @@ const nameSlug = slug
             )
           ) : Number(page) === datas.total_pages ? null : (
             <Link
-              href={`/${slug}/movie?page=${Number(page) + 1}`}
+              href={`/tv/${id}/similar?page=${Number(page) + 1}`}
               class="px-6 py-3 bg-slate-800 rounded-md"
             >
               Next

@@ -1,13 +1,46 @@
 ---
+import NavLink from "@/components/ui/NavLink.astro";
+import { movieListsTopic as customListType } from "@/utils/constant";
 type Props = {
   lists: Array<Genre>;
+  type: "movie" | "tv";
+  customLists: typeof customListType;
 };
 
-const { searchParams } = Astro.url;
+const { searchParams, pathname } = Astro.url;
 
 const genre = searchParams.get("genre");
 
-const { lists } = Astro.props;
+const { lists, type, customLists } = Astro.props;
 ---
 
-<ul class="w-full bg-red-500 py-3 px-2">hello</ul>
+<ul class="w-full py-5 px-2 flex flex-wrap gap-10">
+  {
+    lists.map((list) => (
+      <li>
+        <NavLink
+          href={`/${type}?page=1&genre=${list.id}`}
+          activeClass="bg-opacity-40"
+          customCondition={Number(genre) === list.id}
+          class="bg-red-600 px-4 py-3 rounded-xl hover:shadow-lg hover:shadow-red-400 transition-all duration-200 ease-in-out"
+        >
+          {list.name}
+        </NavLink>
+      </li>
+    ))
+  }
+  {
+    customLists.map((list) => (
+      <li>
+        <NavLink
+          href={`${list.href}?page=1`}
+          activeClass="bg-opacity-40"
+          customCondition={pathname === list.href}
+          class="bg-red-600 px-4 py-3 rounded-xl hover:shadow-lg hover:shadow-red-400 transition-all duration-200 ease-in-out"
+        >
+          {list.name}
+        </NavLink>
+      </li>
+    ))
+  }
+</ul>

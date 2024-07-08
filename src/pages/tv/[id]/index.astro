@@ -1,11 +1,30 @@
 ---
 import DetailLayout from "@/layouts/DetailLayout.astro";
 import { Image } from "astro:assets";
-import { getDetail } from "@/utils/data";
+import type { Tv } from "@/types/tv";
+import { getDetail, getSimiliarDatas, getVideoCompilation } from "@/utils/data";
+import Link from "@/components/ui/Link.astro";
+import LikeAction from "@/components/React/LikeAction";
+import { format } from "date-fns";
+import { FaStar } from "react-icons/fa";
+import Card from "@/components/Tv/Card.astro";
 
 export const prerender = false;
 
 const { id } = Astro.params;
+
+const videoCompilation = (await getVideoCompilation(
+  "tv",
+  id as string
+)) as Array<Video>;
+
+const similarShows = await getSimiliarDatas("tv", id as string, 1);
+
+const shows = similarShows.results?.filter(
+  (movie: Tv) =>
+    typeof movie.poster_path === "string" &&
+    typeof movie.backdrop_path === "string"
+) as TvLists;
 
 const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
 ---
@@ -17,16 +36,116 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
   title={`Tv ~ ${data.original_name}`}
   description={`Once detail movie with id ${id}`}
 >
-  <Image
-    src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster_path}`}
-    alt={"Poster"}
-    inferSize
-    transition:name={`tv ${id} poster`}
-    width={250}
-    height={300}
-    class={"object-cover obejct-center -mt-40"}
-  />
-  <h1 transition:name={`tv ${id} title`} class="mt-3 text-lg">
-    {data.original_name}
-  </h1>
+  <main class="w-full">
+    <section class="w-full grid grid-cols-3 gap-4 pt-6">
+      <div class="col-span-1">
+        <Image
+          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster_path}`}
+          alt={"Poster"}
+          inferSize
+          loading="eager"
+          transition:name={`tv ${id} poster`}
+          width={350}
+          height={400}
+          class={"object-cover obejct-center -mt-56"}
+        />
+      </div>
+      <article class="col-span-2 flex flex-col gap-4">
+        <div class="w-full flex justify-between items-center">
+          <h1
+            transition:name={`tv ${id} title`}
+            class="mt-3 text-5xl font-bold"
+          >
+            {data.original_name}
+          </h1>
+          <LikeAction client:load />
+        </div>
+        <p class="text-justify text-xl">{data.overview}</p>
+        <p class="text-xl" transition:name={`tv ${id} date`}>
+          Release : {
+            format(
+              data.first_air_date ? new Date(data.first_air_date) : new Date(),
+              "MMMM dd, yyyy"
+            )
+          }
+        </p>
+        <p class="text-xl">
+          Website :
+          <a
+            href={data.homepage}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-600">{data.homepage}</a
+          >
+        </p>
+        <p class="text-xl">
+          Total Eps : {data.number_of_episodes} / {data.episode_run_time[0]} minutes
+        </p>
+        <p class="text-xl flex items-center gap-3">
+          Rating : {data.vote_average.toFixed(2)}
+          <FaStar className="text-yellow-500" />
+        </p>
+      </article>
+    </section>
+    {
+      videoCompilation.length > 0 ? (
+        <section class="w-full mt-5">
+          <h1 class="text-3xl font-semibold">Compilation / Trailer Video</h1>
+          <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
+            {videoCompilation.map((video) => (
+              <div class="w-1/4 flex-shrink-0">
+                <iframe
+                  title={video.name}
+                  class="w-full aspect-video object-center object-cover"
+                  src={`https://www.youtube.com/embed/${video.key}`}
+                  allowfullscreen
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </section>
+        </section>
+      ) : null
+    }
+    <section class="w-full mt-5">
+      <div class="w-full flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Similar Movies</h1>
+        <Link
+          href={`/tv/${data.id}/similar?page=1`}
+          class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"
+          >See more</Link
+        >
+      </div>
+      <section class="w-full grid grid-cols-4 gap-4 mt-4">
+        {shows.map((list) => <Card {...list} />)}
+      </section>
+    </section>
+  </main>
 </DetailLayout>
+
+<style itemscope>
+  .slider-list {
+    scroll-snap-type: x mandatory;
+  }
+
+  .slider-list > div {
+    scroll-snap-align: start;
+  }
+
+  .slider-list::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .slider-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .slider-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+
+  .slider-list::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+  }
+</style>

@@ -1,12 +1,32 @@
 ---
 import DetailLayout from "@/layouts/DetailLayout.astro";
 import { Image } from "astro:assets";
-import { getDetail } from "@/utils/data";
+import { getDetail, getVideoCompilation, getSimiliarDatas } from "@/utils/data";
+import type { Movie } from "@/types/movie";
+import Card from "@/components/Movie/Card.astro";
+import Link from "@/components/ui/Link.astro";
+import { format } from "date-fns";
+import { FaStar } from "react-icons/fa";
+import LikeAction from "@/components/React/LikeAction";
 
 export const prerender = false;
+
 const { id } = Astro.params;
 
 const data = (await getDetail("movie", (id as string) ?? "")) as DetailMovie;
+
+const similarMovies = await getSimiliarDatas("movie", id as string, 1);
+
+const videoCompilation = (await getVideoCompilation(
+  "movie",
+  id as string
+)) as Array<Video>;
+
+const movies = similarMovies.results.filter(
+  (movie: Movie) =>
+    typeof movie.poster_path === "string" &&
+    typeof movie.backdrop_path === "string"
+) as Movies;
 ---
 
 <DetailLayout
@@ -16,16 +36,138 @@ const data = (await getDetail("movie", (id as string) ?? "")) as DetailMovie;
   title={`Movie ~ ${data.original_title}`}
   description={`Once detail movie with id ${id}`}
 >
-  <Image
-    src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster_path}`}
-    alt={"Poster"}
-    inferSize
-    transition:name={`movie ${id} poster`}
-    width={250}
-    height={300}
-    class={"object-cover obejct-center -mt-40"}
-  />
-  <h1 transition:name={`movie ${id} title`} class="mt-3 text-lg">
-    {data.original_title}
-  </h1>
+  <main class="w-full">
+    <section class="w-full grid grid-cols-3 gap-4 pt-6">
+      <div class="col-span-1">
+        <Image
+          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster_path}`}
+          alt={"Poster"}
+          inferSize
+          loading="eager"
+          transition:name={`movie ${id} poster`}
+          width={350}
+          height={400}
+          class={"object-cover obejct-center -mt-56"}
+        />
+      </div>
+      <article class="col-span-2 flex flex-col gap-4">
+        <div class="w-full flex justify-between items-center">
+          <h1
+            transition:name={`movie ${id} title`}
+            class="mt-3 text-5xl font-bold"
+          >
+            {data.original_title}
+          </h1>
+          <LikeAction client:load />
+        </div>
+        <p class="text-justify text-xl">{data.overview}</p>
+        <p class="text-xl" transition:name={`movie ${id} date`}>
+          Release : {
+            format(
+              data.release_date ? new Date(data.release_date) : new Date(),
+              "MMMM dd, yyyy"
+            )
+          }
+        </p>
+        <p class="text-xl">
+          Website :
+          <a
+            href={data.homepage}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-600">{data.homepage}</a
+          >
+        </p>
+        <div class="flex gap-6 items-center">
+          <p class="text-xl">
+            Budget : {" "}
+            <span>
+              {
+                new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(data.budget)
+              }
+            </span>
+          </p>
+          <p class="text-xl">
+            Revenue : {" "}
+            <span>
+              {
+                new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(data.revenue)
+              }
+            </span>
+          </p>
+        </div>
+        <p class="text-xl">Duration : {data.runtime} minutes</p>
+        <p class="text-xl flex items-center gap-3">
+          Rating : {data.vote_average.toFixed(2)}
+          <FaStar className="text-yellow-500" />
+        </p>
+      </article>
+    </section>
+    <section class="w-full mt-5">
+      <h1 class="text-3xl font-semibold">Compilation / Trailer Video</h1>
+      <section
+        class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6"
+      >
+        {
+          videoCompilation.map((video) => (
+            <div class="w-1/4 flex-shrink-0">
+              <iframe
+                title={video.name}
+                class="w-full aspect-video object-center object-cover"
+                src={`https://www.youtube.com/embed/${video.key}`}
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+          ))
+        }
+      </section>
+    </section>
+    <section class="w-full mt-5">
+      <div class="w-full flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Similar Movies</h1>
+        <Link
+          href={`/movie/${data.id}/similar?page=1`}
+          class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"
+          >See more</Link
+        >
+      </div>
+      <section class="w-full grid grid-cols-4 gap-4 mt-4">
+        {movies.map((movie) => <Card {...movie} />)}
+      </section>
+    </section>
+  </main>
 </DetailLayout>
+
+<style itemscope>
+  .slider-list {
+    scroll-snap-type: x mandatory;
+  }
+
+  .slider-list > div {
+    scroll-snap-align: start;
+  }
+
+  .slider-list::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .slider-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .slider-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+
+  .slider-list::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+  }
+</style>

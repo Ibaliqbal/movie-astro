@@ -22,6 +22,7 @@ const { original_name, id, poster_path, first_air_date } = Astro.props;
           inferSize
           class="w-full aspect-auto rounded-t-md"
           transition:name={`tv ${id} poster`}
+          loading="eager"
         />
       )
     }
@@ -30,7 +31,12 @@ const { original_name, id, poster_path, first_air_date } = Astro.props;
         {original_name}
       </h1>
       <p transition:name={`tv ${id} date`}>
-        {format(first_air_date, "MMMM dd, yyyy")}
+        {
+          format(
+            first_air_date ? new Date(first_air_date) : new Date(),
+            "MMMM dd, yyyy"
+          )
+        }
       </p>
     </div>
   </a>

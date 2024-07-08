@@ -6,8 +6,20 @@ const { class: className, ...rest } = Astro.props;
 ---
 
 <aside
-  class:list={["col-span-1 w-full h-dvh bg-blue-400 sticky top-2", className]}
+  class:list={[
+    "col-span-1 w-full pb-10 h-fit rounded-md background",
+    className,
+  ]}
   {...rest}
 >
   <slot />
 </aside>
+
+<style>
+  .background {
+    background: rgba(255, 255, 255, 0);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(17.5px);
+    -webkit-backdrop-filter: blur(17.5px);
+  }
+</style>

@@ -8,6 +8,9 @@ const options = {
     Autorization: `Bearer ${token}`,
   },
 };
+
+type TArg = "movie" | "tv";
+
 export async function getDiscover(type: string, genre: number, page: number) {
   const res = await fetch(
     `${url}/discover/${type}?api_key=${apiKey}&page=${page}&with_genres=${genre}`,
@@ -25,7 +28,7 @@ export async function getDiscover(type: string, genre: number, page: number) {
   return result;
 }
 
-export async function getDetail(type: "movie" | "tv", id: string) {
+export async function getDetail(type: TArg, id: string) {
   const res = await fetch(`${url}/${type}/${id}?api_key=${apiKey}`, {
     method: "GET",
     headers: {
@@ -39,7 +42,7 @@ export async function getDetail(type: "movie" | "tv", id: string) {
   return result;
 }
 
-export async function getGenres(type: "movie" | "tv") {
+export async function getGenres(type: TArg) {
   const res = await fetch(`${url}/genre/${type}/list?api_key=${apiKey}`, {
     method: "GET",
     headers: {
@@ -53,8 +56,44 @@ export async function getGenres(type: "movie" | "tv") {
   return result.genres;
 }
 
-export async function getPopularDatas(type: "movie" | "tv") {
-  const res = await fetch(`${url}/${type}/popular?api_key=${apiKey}`, options);
+export async function getDatas(type: TArg, slug: string, page: number) {
+  const res = await fetch(
+    `${url}/${type}/${slug}?api_key=${apiKey}&page=${page}`,
+    options
+  );
+
+  const result = await res.json();
+
+  return result;
+}
+
+export async function getVideoCompilation(type: TArg, id: string) {
+  const res = await fetch(
+    `${url}/${type}/${id}/videos?api_key=${apiKey}`,
+    options
+  );
+
+  const result = await res.json();
+
+  return result.results;
+}
+
+export async function getSimiliarDatas(type: TArg, id: string, page: number) {
+  const res = await fetch(
+    `${url}/${type}/${id}/similar?api_key=${apiKey}&page=${page}`,
+    options
+  );
+
+  const result = await res.json();
+
+  return result;
+}
+
+export async function getSearchDatas(type: TArg, query: string, page: number) {
+  const res = await fetch(
+    `${url}/search/${type}?api_key=${apiKey}&query=${query}&page=${page}`,
+    options
+  );
 
   const result = await res.json();
 

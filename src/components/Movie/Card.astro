@@ -22,7 +22,8 @@ const { original_title, id, poster_path, release_date } = Astro.props;
         <Image
           src={`https://image.tmdb.org/t/p/w500${poster_path}`}
           alt="Poster"
-          inferSize
+          loading="eager"
+          inferSize={true}
           class="w-full aspect-auto rounded-t-md"
           transition:name={`movie ${id} poster`}
         />
@@ -34,11 +35,17 @@ const { original_title, id, poster_path, release_date } = Astro.props;
         {original_title}
       </h1>
       <p transition:name={`movie ${id} date`}>
-        {format(release_date, "MMMM dd, yyyy")}
+        {
+          format(
+            release_date ? new Date(release_date) : new Date(),
+            "MMMM dd, yyyy"
+          )
+        }
       </p>
     </div>
   </a>
 </article>
+
 <style>
   .card {
     background: rgba(255, 255, 255, 0.2);

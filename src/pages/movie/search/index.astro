@@ -1,45 +1,44 @@
 ---
-import type { Movie } from "@/types/movie";
-import Layout from "@/layouts/Layout.astro";
-import List from "@/components/Genre/List.astro";
+import { getGenres, getSearchDatas } from "@/utils/data";
 import { movieListsTopic } from "@/utils/constant";
-import { getGenres, getDatas } from "@/utils/data";
+import Layout from "@/layouts/Layout.astro";
 import Card from "@/components/Movie/Card.astro";
 import Link from "@/components/ui/Link.astro";
-
+import List from "@/components/Genre/List.astro";
+import FormSearch from "@/components/React/FormSearch";
+import type { Movie } from "@/types/movie";
 export const prerender = false;
-
 const { searchParams } = Astro.url;
+
+const query = decodeURIComponent(searchParams.get("q") as string);
 
 const page = searchParams.get("page");
 
-if (!page) return Astro.redirect("/");
-
-const { slug } = Astro.params;
+console.log(query);
 
 const genreListMovies: Array<Genre> = await getGenres("movie");
-const datas = await getDatas("movie", slug as string, Number(page));
+const datas = await getSearchDatas("movie", query, Number(page));
 
 const movies = datas.results.filter(
   (movie: Movie) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"
 ) as Movies;
-
-const nameSlug = slug
-  ?.replace("_", " ")
-  .split(" ")
-  .map((str: any) => str.charAt(0).toUpperCase() + str.slice(1))
-  .join(" ");
 ---
 
-<Layout description="" title={`Movie ~ ${nameSlug}`}
-  ><section class="w-full" slot="main-sidebar">
+<Layout
+  description={`Movie list with genre ${query}`}
+  title={`Movie ~ ${query}`}
+>
+  <section class="w-full" slot="main-sidebar">
     <h1 class="mb-3 text-xl font-bold">Movies</h1>
+    <div class="px-3">
+      <FormSearch type="movie" client:load />
+    </div>
     <List lists={genreListMovies} type="movie" customLists={movieListsTopic} />
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">
-    <h1 class="font-bold text-2xl">{nameSlug}</h1>
+    <h1 class="font-bold text-2xl">Search for result "{query}"</h1>
     <section class="w-full mt-3 grid grid-cols-4 gap-4">
       {movies.map((movie) => <Card {...movie} />)}
     </section>
@@ -50,7 +49,7 @@ const nameSlug = slug
           Number(page) === 1 || Number(page) < 0 ? null : (
             <Link
               class="px-6 py-3 bg-slate-800 rounded-md"
-              href={`/${slug}/movie?page=${Number(page) - 1}`}
+              href={`/movie/search?page=${Number(page) - 1}&q=${encodeURIComponent(query)}`}
             >
               Prev
             </Link>
@@ -60,7 +59,7 @@ const nameSlug = slug
           datas.total_pages > 500 ? (
             Number(page) === 500 ? null : (
               <Link
-                href={`/${slug}/movie?page=${Number(page) + 1}`}
+                href={`/movie/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
                 class="px-6 py-3 bg-slate-800 rounded-md"
               >
                 Next
@@ -68,7 +67,7 @@ const nameSlug = slug
             )
           ) : Number(page) === datas.total_pages ? null : (
             <Link
-              href={`/${slug}/movie?page=${Number(page) + 1}`}
+              href={`/movie/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
               class="px-6 py-3 bg-slate-800 rounded-md"
             >
               Next

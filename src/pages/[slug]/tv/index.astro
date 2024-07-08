@@ -1,9 +1,79 @@
 ---
+import type { Tv } from "@/types/tv";
+import Layout from "@/layouts/Layout.astro";
+import List from "@/components/Genre/List.astro";
+import Card from "@/components/Tv/Card.astro";
+import Link from "@/components/ui/Link.astro";
+import { getGenres, getDatas } from "@/utils/data";
+import { tvListsTopic } from "@/utils/constant";
+
 const { searchParams } = Astro.url;
 
 const page = searchParams.get("page");
 
+if (!page) return Astro.redirect("/");
 const { slug } = Astro.params;
+
+const genreListTv: Array<Genre> = await getGenres("tv");
+const datas = await getDatas("tv", slug as string, Number(page));
+
+const shows = datas.results.filter(
+  (movie: Tv) =>
+    typeof movie.poster_path === "string" &&
+    typeof movie.backdrop_path === "string"
+) as TvLists;
+
+const nameSlug = slug
+  ?.replace("_", " ")
+  .split(" ")
+  .map((str: any) => str.charAt(0).toUpperCase() + str.slice(1))
+  .join(" ");
 ---
 
-<h1>{slug} Tv page = {page}</h1>
+<Layout description="" title={`Movie`}
+  ><section class="w-full" slot="main-sidebar">
+    <h1 class="mb-3 text-xl font-bold">Tv Show</h1>
+    <List lists={genreListTv} type="tv" customLists={tvListsTopic} />
+  </section>
+  <main class="col-span-4 w-full flex flex-col gap-4">
+    <h1 class="font-bold text-2xl">{nameSlug}</h1>
+
+    <section class="w-full mt-3 grid grid-cols-4 gap-4">
+      {shows.map((list) => <Card {...list} />)}
+    </section>
+    <div class="flex w-full justify-between items-center">
+      <h3 class="font-semibold text-lg">{datas.page} of {datas.total_pages}</h3>
+      <div class="flex gap-6 items-center">
+        {
+          Number(page) === 1 || Number(page) < 0 ? null : (
+            <Link
+              class="px-6 py-3 bg-slate-800 rounded-md"
+              href={`/${slug}/tv?page=${Number(page) - 1}`}
+            >
+              Prev
+            </Link>
+          )
+        }
+        {
+          datas.total_pages > 500 ? (
+            Number(page) === 500 ? null : (
+              <Link
+                href={`/${slug}/tv?page=${Number(page) + 1}`}
+                class="px-6 py-3 bg-slate-800 rounded-md"
+              >
+                Next
+              </Link>
+            )
+          ) : Number(page) === datas.total_pages ? null : (
+            <Link
+              href={`/${slug}/tv?page=${Number(page) + 1}`}
+              class="px-6 py-3 bg-slate-800 rounded-md"
+            >
+              Next
+            </Link>
+          )
+        }
+      </div>
+    </div>
+  </main>
+</Layout>

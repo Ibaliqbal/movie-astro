@@ -1,17 +1,28 @@
 ---
-import Logo from "@/images/Logo.png";
 import { Image } from "astro:assets";
-import Link from "@/components/ui/Link.astro";
 import NavLink from "@/components/ui/NavLink.astro";
+const { pathname } = Astro.url;
 ---
 
 <header
-  class="w-full flex justify-between bg-yellow-400 bg-opacity-7 5 px-6 items-center"
+  class="w-full flex justify-between bg-yellow-400 bg-opacity-75 px-6 items-center"
 >
-  <Image src={"/Logo.png"} alt={"Logo"} width={70} height={70} />
+  <Image
+    src={"/Logo.png"}
+    alt={"Logo"}
+    width={70}
+    height={70}
+    loading="eager"
+  />
   <nav class="font-bold text-xl text-black">
     <ul>
-      <li><NavLink href={"/"}>Home</NavLink></li>
+      <li>
+        <NavLink
+          href={"/"}
+          customCondition={pathname === "/"}
+          activeClass="border-b-[4px] border-blue-600">Home</NavLink
+        >
+      </li>
     </ul>
   </nav>
 </header>

@@ -1,9 +1,11 @@
 ---
+import { movieListsTopic, tvListsTopic } from "@/utils/constant";
 import Layout from "@/layouts/Layout.astro";
 import { getGenres } from "@/utils/data";
 import ListGenre from "@/components/Genre/List.astro";
 import HomepageMovie from "@/components/Movie/Homepage.astro";
 import HomepageTv from "@/components/Tv/Homepage.astro";
+import FormSearch from "@/components/React/FormSearch";
 
 export const prerender = true;
 
@@ -15,9 +17,29 @@ const genreListTv: Array<Genre> = await getGenres("tv");
 ---
 
 <Layout title="Welcome to Astro." description="List all movies use API TMDB">
-  <section class="w-full" slot="main-sidebar">
-    <ListGenre lists={genreListMovies} />
-    <ListGenre lists={genreListTv} />
+  <section class="w-full flex flex-col gap-4" slot="main-sidebar">
+    <div class="w-full">
+      <h1 class="mb-3 text-xl font-bold">Movies</h1>
+      <div class="px-3">
+        <FormSearch
+          type="movie"
+          transition:persist="movie search"
+          client:load
+        />
+      </div>
+      <ListGenre
+        lists={genreListMovies}
+        type="movie"
+        customLists={movieListsTopic}
+      />
+    </div>
+    <div class="w-full">
+      <h1 class="mb-3 text-xl font-bold">Tv Show</h1>
+      <div class="px-3">
+        <FormSearch type="tv" client:load />
+      </div>
+      <ListGenre lists={genreListTv} type="tv" customLists={tvListsTopic} />
+    </div>
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">
     <HomepageTv genreTv={genreTv} />

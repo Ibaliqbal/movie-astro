@@ -1,6 +1,6 @@
 ---
 import type { Movie } from "@/types/movie";
-import { getDiscover, getPopularDatas } from "@/utils/data";
+import { getDiscover, getDatas } from "@/utils/data";
 import Link from "@/components/ui/Link.astro";
 import Card from "./Card.astro";
 
@@ -10,7 +10,7 @@ type Props = {
 
 const { genreMovie } = Astro.props;
 
-const popular = await getPopularDatas("movie");
+const popular = await getDatas("movie", "popular", 1);
 const movies_popular = popular.results.filter(
   (movie: Movie) =>
     typeof movie.poster_path === "string" &&

@@ -2,8 +2,6 @@
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "@/components/Navbar.astro";
 import SidebarLayout from "./SidebarLayout.astro";
-import { getGenres } from "@/utils/data";
-import ListGenre from "@/components/Genre/List.astro";
 
 interface Props {
   title: string;
@@ -22,12 +20,13 @@ const { title, description } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <ViewTransitions />
+    <ViewTransitions fallback="none" />
   </head>
   <body class="bg-black bg-opacity-95 text-white">
     <Navbar />
     <main
-      class="max-w-layout w-full container grid grid-cols-5 gap-3 pb-10 pt-8"
+      class="max-w-layout w-full container grid grid-cols-5 gap-5 pb-10 pt-8"
+      transition:animate="none"
     >
       <SidebarLayout class="p-2">
         <slot name="main-sidebar" />

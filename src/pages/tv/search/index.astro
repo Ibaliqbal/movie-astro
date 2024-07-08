@@ -1,51 +1,46 @@
 ---
-import type { Movie } from "@/types/movie";
+import { getGenres, getSearchDatas } from "@/utils/data";
+import { tvListsTopic } from "@/utils/constant";
 import Layout from "@/layouts/Layout.astro";
-import List from "@/components/Genre/List.astro";
-import { movieListsTopic } from "@/utils/constant";
-import { getDiscover, getGenres } from "@/utils/data";
-import Card from "@/components/Movie/Card.astro";
+import Card from "@/components/Tv/Card.astro";
 import Link from "@/components/ui/Link.astro";
+import List from "@/components/Genre/List.astro";
 import FormSearch from "@/components/React/FormSearch";
-
+import type { Tv } from "@/types/tv";
 export const prerender = false;
-
 const { searchParams } = Astro.url;
+
+const query = decodeURIComponent(searchParams.get("q") as string);
 
 const page = searchParams.get("page");
 
-const genre = searchParams.get("genre");
+console.log(query);
 
-const query = searchParams.get("query");
+const genreListTv: Array<Genre> = await getGenres("tv");
+const datas = await getSearchDatas("tv", query, Number(page));
 
-const genreListMovies: Array<Genre> = await getGenres("movie");
-const datas = await getDiscover("movie", Number(genre), Number(page));
-
-const movies = datas.results.filter(
-  (movie: Movie) =>
+const shows = datas.results.filter(
+  (movie: Tv) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"
-) as Movies;
-const getNameGenre = genreListMovies.find(
-  (list) => list.id === Number(genre)
-)?.name;
+) as TvLists;
 ---
 
 <Layout
-  description={`Movie list with genre ${genre}`}
-  title={`Movie ~ ${getNameGenre}`}
+  description={`Movie list with genre ${query}`}
+  title={`Movie ~ ${query}`}
 >
   <section class="w-full" slot="main-sidebar">
-    <h1 class="mb-3 text-xl font-bold">Movies</h1>
+    <h1 class="mb-3 text-xl font-bold">Tv Show</h1>
     <div class="px-3">
-      <FormSearch type="movie" client:load />
+      <FormSearch type="tv" client:load />
     </div>
-    <List lists={genreListMovies} type="movie" customLists={movieListsTopic} />
+    <List lists={genreListTv} type="movie" customLists={tvListsTopic} />
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">
-    <h1 class="font-bold text-2xl">{getNameGenre}</h1>
+    <h1 class="font-bold text-2xl">Search for result "{query}"</h1>
     <section class="w-full mt-3 grid grid-cols-4 gap-4">
-      {movies.map((movie) => <Card {...movie} />)}
+      {shows.map((list) => <Card {...list} />)}
     </section>
     <div class="flex w-full justify-between items-center">
       <h3 class="font-semibold text-lg">{datas.page} of {datas.total_pages}</h3>
@@ -54,7 +49,7 @@ const getNameGenre = genreListMovies.find(
           Number(page) === 1 || Number(page) < 0 ? null : (
             <Link
               class="px-6 py-3 bg-slate-800 rounded-md"
-              href={`/movie?page=${Number(page) - 1}&genre=${genre}`}
+              href={`/tv/search?page=${Number(page) - 1}&q=${encodeURIComponent(query)}`}
             >
               Prev
             </Link>
@@ -64,7 +59,7 @@ const getNameGenre = genreListMovies.find(
           datas.total_pages > 500 ? (
             Number(page) === 500 ? null : (
               <Link
-                href={`/movie?page=${Number(page) + 1}&genre=${genre}`}
+                href={`/tv/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
                 class="px-6 py-3 bg-slate-800 rounded-md"
               >
                 Next
@@ -72,7 +67,7 @@ const getNameGenre = genreListMovies.find(
             )
           ) : Number(page) === datas.total_pages ? null : (
             <Link
-              href={`/movie?page=${Number(page) + 1}&genre=${genre}`}
+              href={`/tv/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
               class="px-6 py-3 bg-slate-800 rounded-md"
             >
               Next
