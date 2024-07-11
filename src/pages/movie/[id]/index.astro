@@ -38,8 +38,6 @@ const movies = similarMovies.results.filter(
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"
 ) as Movies;
-
-console.log(credits);
 ---
 
 <DetailLayout
@@ -156,14 +154,9 @@ console.log(credits);
           credits.map((credit) => (
             <div class="w-1/4 flex-shrink-0 card rounded-lg">
               {credit.profile_path === null ? (
-                <Image
-                  inferSize={false}
-                  src="/images/avatar.jpg"
-                  alt={`${credit.name}`}
-                  loading="eager"
-                  width={200}
-                  class="w-full object-cover object-center aspect-[1/.8]"
-                />
+                <div class="w-full aspect-[1/.8] bg-white grid place-items-center text-black font-bold">
+                  Photo not found
+                </div>
               ) : (
                 <Image
                   src={`${urlImage}${credit.profile_path}`}
