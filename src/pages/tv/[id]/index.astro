@@ -8,6 +8,7 @@ import LikeAction from "@/components/React/LikeAction";
 import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
 import Card from "@/components/Tv/Card.astro";
+import { user } from "@/store";
 
 export const prerender = false;
 
@@ -58,7 +59,18 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
           >
             {data.original_name}
           </h1>
-          <LikeAction client:load />
+          <LikeAction
+            dataAdd={{
+              title: data.original_name,
+              poster: data.poster_path,
+              list_id: data.id,
+              release_list: data.first_air_date,
+              user_id: user.get()?.id as string,
+              type: "tv",
+            }}
+            id={data.id}
+            client:load
+          />
         </div>
         <p class="text-justify text-xl">{data.overview}</p>
         <p class="text-xl" transition:name={`tv ${id} date`}>

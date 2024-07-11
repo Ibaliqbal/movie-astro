@@ -1,6 +1,29 @@
 ---
 import { Image } from "astro:assets";
 import NavLink from "@/components/ui/NavLink.astro";
+import { SignIn } from "auth-astro/components";
+import ProfileModal from "@/components/React/PorfileModal";
+import { checkValidUser } from "@/lib/supabase/function";
+import { getSession } from "auth-astro/server";
+import { supabase } from "@/lib/supabase/supabase";
+
+const session = await getSession(Astro.request);
+
+async function fetchCountries() {
+  const res = await fetch("https://restcountries.com/v2/all");
+  const data = await res.json();
+
+  return data;
+}
+
+let user: null | { status: boolean; data: User } = null;
+let countries: any[] = [];
+
+if (session) {
+  user = await checkValidUser((session.user?.email as string) ?? "");
+  countries = await fetchCountries();
+}
+
 const { pathname } = Astro.url;
 ---
 
@@ -14,15 +37,42 @@ const { pathname } = Astro.url;
     height={70}
     loading="eager"
   />
-  <nav class="font-bold text-xl text-black">
-    <ul>
+  <nav class="font-bold text-xl text-black flex gap-3 items-center">
+    <ul class="flex gap-3 items-center">
       <li>
         <NavLink
           href={"/"}
           customCondition={pathname === "/"}
-          activeClass="border-b-[4px] border-blue-600">Home</NavLink
+          activeClass="border-b-[4px] border-blue-600"
         >
+          Home
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          href={"/favorite?filter=all"}
+          customCondition={pathname === "/favorite"}
+          activeClass="border-b-[4px] border-blue-600"
+        >
+          Favorite
+        </NavLink>
       </li>
     </ul>
+    {
+      session ? (
+        <ProfileModal client:load countries={countries} user={user}>
+          <Image
+            src={session.user?.image as string}
+            alt={"Avatar"}
+            inferSize
+            width={50}
+            height={50}
+            class="rounded-full"
+          />
+        </ProfileModal>
+      ) : (
+        <SignIn>Sign In</SignIn>
+      )
+    }
   </nav>
 </header>

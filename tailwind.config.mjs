@@ -10,6 +10,9 @@ export default {
       maxWidth: {
         layout: "1500px",
       },
+      backgroundColor: {
+        primary: "#111827",
+      },
     },
   },
   plugins: [],

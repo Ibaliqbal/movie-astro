@@ -6,8 +6,7 @@ import ListGenre from "@/components/Genre/List.astro";
 import HomepageMovie from "@/components/Movie/Homepage.astro";
 import HomepageTv from "@/components/Tv/Homepage.astro";
 import FormSearch from "@/components/React/FormSearch";
-
-export const prerender = true;
+import type { Session } from "@auth/core/types";
 
 const genreMovie = 28;
 const genreTv = 16;
@@ -21,11 +20,7 @@ const genreListTv: Array<Genre> = await getGenres("tv");
     <div class="w-full">
       <h1 class="mb-3 text-xl font-bold">Movies</h1>
       <div class="px-3">
-        <FormSearch
-          type="movie"
-          transition:persist="movie search"
-          client:load
-        />
+        <FormSearch type="movie" client:load />
       </div>
       <ListGenre
         lists={genreListMovies}

@@ -31,4 +31,22 @@ declare global {
     published_at: Date;
     id: string;
   };
+  type User = {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+    created_at: Date | string;
+    country: string;
+  };
+  type SavedList = {
+    id: string;
+    user_id: string;
+    created_at: Date | string;
+    poster: string;
+    list_id: number;
+    release_list: string;
+    title: string;
+    type: string;
+  };
 }

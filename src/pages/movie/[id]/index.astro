@@ -7,6 +7,7 @@ import Card from "@/components/Movie/Card.astro";
 import Link from "@/components/ui/Link.astro";
 import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
+import { user } from "@/store";
 import LikeAction from "@/components/React/LikeAction";
 
 export const prerender = false;
@@ -58,7 +59,18 @@ const movies = similarMovies.results.filter(
           >
             {data.original_title}
           </h1>
-          <LikeAction client:load />
+          <LikeAction
+            dataAdd={{
+              title: data.original_title,
+              poster: data.poster_path,
+              list_id: data.id,
+              release_list: data.release_date,
+              user_id: user.get()?.id as string,
+              type: "movie",
+            }}
+            id={data.id}
+            client:load
+          />
         </div>
         <p class="text-justify text-xl">{data.overview}</p>
         <p class="text-xl" transition:name={`movie ${id} date`}>

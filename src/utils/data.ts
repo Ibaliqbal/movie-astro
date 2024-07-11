@@ -1,6 +1,7 @@
 const apiKey = import.meta.env.PUBLIC_TMDB_KEY;
 const token = import.meta.env.PUBLIC_TMDB_TOKEN;
 const url = import.meta.env.PUBLIC_API_URL;
+
 const options = {
   method: "GET",
   headers: {

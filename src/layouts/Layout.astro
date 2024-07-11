@@ -2,13 +2,24 @@
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "@/components/Navbar.astro";
 import SidebarLayout from "./SidebarLayout.astro";
+import { getSession } from "auth-astro/server";
+import { storedUser } from "@/store";
+import { checkValidUser } from "@/lib/supabase/function";
 
 interface Props {
   title: string;
   description: string;
 }
 
+const session = await getSession(Astro.request);
+
+if (session) {
+  const data = await checkValidUser((session.user?.email as string) ?? "");
+  storedUser(data.data);
+}
+
 const { title, description } = Astro.props;
+const { pathname } = Astro.url;
 ---
 
 <!doctype html>
@@ -23,14 +34,20 @@ const { title, description } = Astro.props;
     <ViewTransitions fallback="none" />
   </head>
   <body class="bg-black bg-opacity-95 text-white">
-    <Navbar />
+    {pathname === "/register" || pathname === "/signin" ? null : <Navbar />}
     <main
-      class="max-w-layout w-full container grid grid-cols-5 gap-5 pb-10 pt-8"
+      class={`max-w-layout w-full container ${pathname === "/register" || pathname === "/signin" || pathname === "/favorite" ? "" : "grid grid-cols-5 gap-5 pb-10 pt-8"}`}
       transition:animate="none"
     >
-      <SidebarLayout class="p-2">
-        <slot name="main-sidebar" />
-      </SidebarLayout>
+      {
+        pathname === "/register" ||
+        pathname === "/signin" ||
+        pathname === "/favorite" ? null : (
+          <SidebarLayout class="p-2">
+            <slot name="main-sidebar" />
+          </SidebarLayout>
+        )
+      }
       <slot />
     </main>
   </body>

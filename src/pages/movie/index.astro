@@ -16,8 +16,6 @@ const page = searchParams.get("page");
 
 const genre = searchParams.get("genre");
 
-const query = searchParams.get("query");
-
 const genreListMovies: Array<Genre> = await getGenres("movie");
 const datas = await getDiscover("movie", Number(genre), Number(page));
 
