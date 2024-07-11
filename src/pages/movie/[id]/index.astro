@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
 import { user } from "@/store";
 import LikeAction from "@/components/React/LikeAction";
+import { YouTube } from "@astro-community/astro-embed-youtube";
 
 export const prerender = false;
 
@@ -129,13 +130,7 @@ const movies = similarMovies.results.filter(
         {
           videoCompilation.map((video) => (
             <div class="w-1/4 flex-shrink-0">
-              <iframe
-                title={video.name}
-                class="w-full aspect-video object-center object-cover"
-                src={`https://www.youtube.com/embed/${video.key}`}
-                allowfullscreen
-                loading="lazy"
-              />
+              <YouTube id={video.key} posterQuality="high" />
             </div>
           ))
         }

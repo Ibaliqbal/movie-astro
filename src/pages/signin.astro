@@ -1,6 +1,10 @@
 ---
-export const prerender = true;
-import Layout from "@/layouts/Layout.astro";
+export const prerender = false;
+import Layout from "@/layouts/AuthLayout.astro";
+import { SignIn } from "auth-astro/components";
+
+const { searchParams } = Astro.url;
+const callbackUrl = searchParams.get("callbackUrl");
 ---
 
 <Layout title="Sign in" description="Sign In page for user">
@@ -24,8 +28,9 @@ import Layout from "@/layouts/Layout.astro";
         </svg>
         Sign in with GitHub</button
       >
-      <button
-        id="signin-google"
+      <SignIn
+        options={{ callbackUrl: callbackUrl as string, redirect: false }}
+        provider="google"
         class="w-full dark:bg-zinc-100 p-4 border border-zinc-300 dark:border-zinc-100 flex justify-center items-center gap-2 rounded-md mt-2 dark:text-zinc-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <svg
@@ -52,18 +57,7 @@ import Layout from "@/layouts/Layout.astro";
           ></path>
         </svg>
         Sign in with Google
-      </button>
+      </SignIn>
     </section>
   </main>
 </Layout>
-
-<script>
-  document.addEventListener("astro:page-load", async () => {
-    let params = new URL(document.location.href).searchParams;
-    const callbackUrl = params.get("callbackUrl");
-    const { signIn } = await import("auth-astro/client");
-    document.getElementById("signin-google")?.addEventListener("click", () => {
-      signIn("google", { callbackUrl: callbackUrl as string, redirect: false });
-    });
-  });
-</script>

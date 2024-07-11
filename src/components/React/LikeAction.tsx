@@ -1,8 +1,8 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { actions } from "astro:actions";
 import React, { useEffect, useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
-import {} from "react-hot-toast/headless";
+import { toast } from "react-hot-toast";
+const { signIn } = await import("auth-astro/client");
 
 const LikeAction = ({
   dataAdd,
@@ -44,18 +44,12 @@ const LikeAction = ({
               id: findId.id as string,
             });
             setFavorite((prev) => prev.filter((list) => list.id !== findId.id));
-            if (data?.success) {
-              toast.success("Removed from favorite");
-            } else {
-              toast.error("Failed to remove favorite");
-            }
           } else {
             const { data } = await actions.addFavorite.safe(dataAdd);
-            setFavorite((prev) => [...prev, data?.data[0]]);
             if (data?.success) {
-              toast.success("Added to favorite");
+              setFavorite((prev) => [...prev, data?.data[0]]);
             } else {
-              toast.error("Failed to add favorite");
+              signIn();
             }
           }
         } catch (error) {

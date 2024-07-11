@@ -34,15 +34,13 @@ const { pathname } = Astro.url;
     <ViewTransitions fallback="none" />
   </head>
   <body class="bg-black bg-opacity-95 text-white">
-    {pathname === "/register" || pathname === "/signin" ? null : <Navbar />}
+    {pathname === "/signin" ? null : <Navbar />}
     <main
-      class={`max-w-layout w-full container ${pathname === "/register" || pathname === "/signin" || pathname === "/favorite" ? "" : "grid grid-cols-5 gap-5 pb-10 pt-8"}`}
+      class={`max-w-layout w-full container ${pathname === "/signin" || pathname === "/favorite" ? "" : "grid grid-cols-5 gap-5 pb-10 pt-8"}`}
       transition:animate="none"
     >
       {
-        pathname === "/register" ||
-        pathname === "/signin" ||
-        pathname === "/favorite" ? null : (
+        pathname === "/signin" || pathname === "/favorite" ? null : (
           <SidebarLayout class="p-2">
             <slot name="main-sidebar" />
           </SidebarLayout>
