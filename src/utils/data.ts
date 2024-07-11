@@ -10,7 +10,7 @@ const options = {
   },
 };
 
-type TArg = "movie" | "tv";
+export type TArg = "movie" | "tv";
 
 export async function getDiscover(type: string, genre: number, page: number) {
   const res = await fetch(
@@ -99,4 +99,15 @@ export async function getSearchDatas(type: TArg, query: string, page: number) {
   const result = await res.json();
 
   return result;
+}
+
+export async function getCredits(id: string, type: TArg) {
+  const res = await fetch(
+    `${url}/${type}/${id}/credits?api_key=${apiKey}`,
+    options
+  );
+
+  const result = await res.json();
+
+  return result.cast as Array<Credit>;
 }

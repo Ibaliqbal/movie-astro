@@ -1,7 +1,12 @@
 ---
 import DetailLayout from "@/layouts/DetailLayout.astro";
 import { Image } from "astro:assets";
-import { getDetail, getVideoCompilation, getSimiliarDatas } from "@/utils/data";
+import {
+  getDetail,
+  getVideoCompilation,
+  getSimiliarDatas,
+  getCredits,
+} from "@/utils/data";
 import type { Movie } from "@/types/movie";
 import Card from "@/components/Movie/Card.astro";
 import Link from "@/components/ui/Link.astro";
@@ -13,11 +18,15 @@ import { YouTube } from "@astro-community/astro-embed-youtube";
 
 export const prerender = false;
 
+const urlImage = import.meta.env.PUBLIC_TMDB_IMG_URL;
+
 const { id } = Astro.params;
 
 const data = (await getDetail("movie", (id as string) ?? "")) as DetailMovie;
 
 const similarMovies = await getSimiliarDatas("movie", id as string, 1);
+
+const credits = await getCredits(id as string, "movie");
 
 const videoCompilation = (await getVideoCompilation(
   "movie",
@@ -29,6 +38,8 @@ const movies = similarMovies.results.filter(
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"
 ) as Movies;
+
+console.log(credits);
 ---
 
 <DetailLayout
@@ -42,7 +53,7 @@ const movies = similarMovies.results.filter(
     <section class="w-full grid grid-cols-3 gap-4 pt-6">
       <div class="col-span-1">
         <Image
-          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster_path}`}
+          src={`${urlImage}${data.poster_path}`}
           alt={"Poster"}
           inferSize
           loading="eager"
@@ -130,7 +141,41 @@ const movies = similarMovies.results.filter(
         {
           videoCompilation.map((video) => (
             <div class="w-1/4 flex-shrink-0">
-              <YouTube id={video.key} posterQuality="high" />
+              <YouTube id={video.key} posterQuality="high" title={video.name} />
+            </div>
+          ))
+        }
+      </section>
+    </section>
+    <section class="w-full mt-5">
+      <h1 class="text-3xl font-semibold">Credits</h1>
+      <section
+        class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6"
+      >
+        {
+          credits.map((credit) => (
+            <div class="w-1/4 flex-shrink-0 card rounded-lg">
+              {credit.profile_path === null ? (
+                <Image
+                  src="/images/avatar.jpg"
+                  alt={`${credit.name}`}
+                  loading="eager"
+                  width={200}
+                  class="w-full object-cover object-center aspect-[1/.8]"
+                />
+              ) : (
+                <Image
+                  src={`${urlImage}${credit.profile_path}`}
+                  alt={`${credit.name}`}
+                  inferSize
+                  loading="eager"
+                  class="w-full object-cover object-center aspect-[1/.8]"
+                />
+              )}
+              <div class="mt-4">
+                <h1 class="text-center">{`${credit.name} ( ${credit.original_name} )`}</h1>
+                <p class="text-center">{credit.character}</p>
+              </div>
             </div>
           ))
         }
@@ -153,6 +198,15 @@ const movies = similarMovies.results.filter(
 </DetailLayout>
 
 <style itemscope>
+  .card {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    min-height: 300px;
+  }
+
   .slider-list {
     scroll-snap-type: x mandatory;
   }
