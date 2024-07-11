@@ -157,6 +157,7 @@ console.log(credits);
             <div class="w-1/4 flex-shrink-0 card rounded-lg">
               {credit.profile_path === null ? (
                 <Image
+                  inferSize={false}
                   src="/images/avatar.jpg"
                   alt={`${credit.name}`}
                   loading="eager"
