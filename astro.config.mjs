@@ -31,7 +31,5 @@ export default defineConfig({
   },
   integrations: [tailwind(), react(), auth()],
   output: "server",
-  adapter: vercel({
-    imageService: true,
-  }),
+  adapter: vercel(),
 });

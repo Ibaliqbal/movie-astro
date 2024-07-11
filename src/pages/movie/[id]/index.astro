@@ -91,15 +91,21 @@ const movies = similarMovies.results.filter(
             )
           }
         </p>
-        <p class="text-xl">
-          Website :
-          <a
-            href={data.homepage}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-blue-600">{data.homepage}</a
-          >
-        </p>
+        {
+          data.homepage && (
+            <p class="text-xl">
+              Website :
+              <a
+                href={data.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600"
+              >
+                {data.homepage}
+              </a>
+            </p>
+          )
+        }
         <div class="flex gap-6 items-center">
           <p class="text-xl">
             Budget : {" "}
@@ -131,20 +137,24 @@ const movies = similarMovies.results.filter(
         </p>
       </article>
     </section>
-    <section class="w-full mt-5">
-      <h1 class="text-3xl font-semibold">Compilation / Trailer Video</h1>
-      <section
-        class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6"
-      >
-        {
-          videoCompilation.map((video) => (
-            <div class="w-1/4 flex-shrink-0">
-              <YouTube id={video.key} posterQuality="high" title={video.name} />
-            </div>
-          ))
-        }
-      </section>
-    </section>
+    {
+      videoCompilation.length > 0 ? (
+        <section class="w-full mt-5">
+          <h1 class="text-3xl font-semibold">Compilation / Trailer Video</h1>
+          <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
+            {videoCompilation.map((video) => (
+              <div class="w-1/4 flex-shrink-0">
+                <YouTube
+                  id={video.key}
+                  posterQuality="high"
+                  title={video.name}
+                />
+              </div>
+            ))}
+          </section>
+        </section>
+      ) : null
+    }
     <section class="w-full mt-5">
       <h1 class="text-3xl font-semibold">Credits</h1>
       <section

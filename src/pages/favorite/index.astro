@@ -1,11 +1,18 @@
 ---
-import Layout from "@/layouts/Layout.astro";
 import { user } from "@/store";
 import { getFavorite } from "@/lib/supabase/function";
 import NavLink from "@/components/ui/NavLink.astro";
 import Link from "@/components/ui/Link.astro";
 import { Image } from "astro:assets";
 import { format } from "date-fns";
+import { getSession } from "auth-astro/server";
+import Layout from "@/layouts/Layout.astro";
+
+const { request, redirect } = Astro;
+
+const session = await getSession(request);
+
+if (!session) return redirect("/");
 
 export const prerender = false;
 

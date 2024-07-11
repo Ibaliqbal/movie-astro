@@ -2,17 +2,25 @@
 import DetailLayout from "@/layouts/DetailLayout.astro";
 import { Image } from "astro:assets";
 import type { Tv } from "@/types/tv";
-import { getDetail, getSimiliarDatas, getVideoCompilation } from "@/utils/data";
+import {
+  getDetail,
+  getSimiliarDatas,
+  getVideoCompilation,
+  getCredits,
+} from "@/utils/data";
 import Link from "@/components/ui/Link.astro";
 import LikeAction from "@/components/React/LikeAction";
 import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
 import Card from "@/components/Tv/Card.astro";
 import { user } from "@/store";
+import { YouTube } from "@astro-community/astro-embed-youtube";
 
 export const prerender = false;
 
 const { id } = Astro.params;
+
+const urlImage = import.meta.env.PUBLIC_TMDB_IMG_URL;
 
 const videoCompilation = (await getVideoCompilation(
   "tv",
@@ -20,6 +28,8 @@ const videoCompilation = (await getVideoCompilation(
 )) as Array<Video>;
 
 const similarShows = await getSimiliarDatas("tv", id as string, 1);
+
+const credits = await getCredits(id as string, "tv");
 
 const shows = similarShows.results?.filter(
   (movie: Tv) =>
@@ -41,7 +51,7 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
     <section class="w-full grid grid-cols-3 gap-4 pt-6">
       <div class="col-span-1">
         <Image
-          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster_path}`}
+          src={`${urlImage}${data.poster_path}`}
           alt={"Poster"}
           inferSize
           loading="eager"
@@ -81,15 +91,21 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
             )
           }
         </p>
-        <p class="text-xl">
-          Website :
-          <a
-            href={data.homepage}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-blue-600">{data.homepage}</a
-          >
-        </p>
+        {
+          data.homepage && (
+            <p class="text-xl">
+              Website :
+              <a
+                href={data.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600"
+              >
+                {data.homepage}
+              </a>
+            </p>
+          )
+        }
         <p class="text-xl">
           Total Eps : {data.number_of_episodes} / {data.episode_run_time[0]} minutes
         </p>
@@ -106,13 +122,41 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
           <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
             {videoCompilation.map((video) => (
               <div class="w-1/4 flex-shrink-0">
-                <iframe
+                <YouTube
+                  id={video.key}
                   title={video.name}
-                  class="w-full aspect-video object-center object-cover"
-                  src={`https://www.youtube.com/embed/${video.key}`}
-                  allowfullscreen
-                  loading="lazy"
+                  posterQuality="high"
                 />
+              </div>
+            ))}
+          </section>
+        </section>
+      ) : null
+    }
+    {
+      credits.length > 0 ? (
+        <section class="w-full mt-5">
+          <h1 class="text-3xl font-semibold">Credits</h1>
+          <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
+            {credits.map((credit) => (
+              <div class="w-1/4 flex-shrink-0 card rounded-lg">
+                {credit.profile_path === null ? (
+                  <div class="w-full aspect-[1/.8] bg-white grid place-items-center text-black font-bold">
+                    Photo not found
+                  </div>
+                ) : (
+                  <Image
+                    src={`${urlImage}${credit.profile_path}`}
+                    alt={`${credit.name}`}
+                    inferSize
+                    loading="eager"
+                    class="w-full object-cover object-center aspect-[1/.8]"
+                  />
+                )}
+                <div class="mt-4">
+                  <h1 class="text-center">{`${credit.name} ( ${credit.original_name} )`}</h1>
+                  <p class="text-center">{credit.character}</p>
+                </div>
               </div>
             ))}
           </section>
