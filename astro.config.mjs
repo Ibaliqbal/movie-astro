@@ -22,8 +22,18 @@ export default defineConfig({
         pathname: "/**",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "qvsxkboawsixkeqgaeja.supabase.co",
+        pathname: "/**",
+        port: "",
+      },
     ],
-    domains: ["image.tmdb.org", "lh3.googleusercontent.com"],
+    domains: [
+      "image.tmdb.org",
+      "lh3.googleusercontent.com",
+      "qvsxkboawsixkeqgaeja.supabase.co",
+    ],
     service: passthroughImageService(),
   },
   experimental: {

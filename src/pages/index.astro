@@ -6,7 +6,7 @@ import ListGenre from "@/components/Genre/List.astro";
 import HomepageMovie from "@/components/Movie/Homepage.astro";
 import HomepageTv from "@/components/Tv/Homepage.astro";
 import FormSearch from "@/components/React/FormSearch";
-import type { Session } from "@auth/core/types";
+import HomepageTrending from "@/components/AllTrending/Homepage.astro";
 
 const genreMovie = 28;
 const genreTv = 16;
@@ -37,6 +37,7 @@ const genreListTv: Array<Genre> = await getGenres("tv");
     </div>
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">
+    <HomepageTrending />
     <HomepageTv genreTv={genreTv} />
     <HomepageMovie genreMovie={genreMovie} />
   </main>

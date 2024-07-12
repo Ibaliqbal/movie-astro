@@ -1,5 +1,4 @@
 ---
-import { user } from "@/store";
 import { getFavorite } from "@/lib/supabase/function";
 import NavLink from "@/components/ui/NavLink.astro";
 import Link from "@/components/ui/Link.astro";
@@ -9,6 +8,8 @@ import { getSession } from "auth-astro/server";
 import Layout from "@/layouts/Layout.astro";
 
 const { request, redirect } = Astro;
+
+const { user } = Astro.locals;
 
 const session = await getSession(request);
 
@@ -23,7 +24,7 @@ const filter = searchParams.get("filter");
 if (!filter) return Astro.redirect("/");
 
 const datas = await getFavorite(
-  user.get()?.id as string,
+  user?.id as string,
   filter as "all" | "movie" | "tv"
 );
 ---
@@ -50,7 +51,7 @@ const datas = await getFavorite(
         activeClass="bg-opacity-40">Tv Shows</NavLink
       >
     </div>
-    <section class="w-full grid grid-cols-5 gap-4 mt-5">
+    <section class="w-full grid grid-cols-5 gap-4 mt-5 pb-16">
       {
         datas.map((data) => (
           <article

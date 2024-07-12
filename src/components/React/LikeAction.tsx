@@ -1,12 +1,12 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { actions } from "astro:actions";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 const { signIn } = await import("auth-astro/client");
 
 const LikeAction = ({
   dataAdd,
   id,
+  isAuth,
 }: {
   dataAdd: {
     title: string;
@@ -17,6 +17,7 @@ const LikeAction = ({
     user_id: string;
   };
   id: number;
+  isAuth: boolean;
 }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [favorite, setFavorite] = useState<Array<SavedList>>([]);
@@ -28,7 +29,9 @@ const LikeAction = ({
       setFavorite(result.data);
     }
 
-    getFavorite();
+    if (isAuth) {
+      getFavorite();
+    }
   }, []);
 
   return (

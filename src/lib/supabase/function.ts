@@ -47,7 +47,6 @@ export async function getFavorite(id: string, filter: "tv" | "movie" | "all") {
   if (filter !== "all" && filter !== "tv" && filter !== "movie") return [];
 
   if (filter === "all") {
-    console.log("here");
     const { data, error } = await supabase
       .from("saved_list")
       .select(`*`)

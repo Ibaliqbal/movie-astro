@@ -1,0 +1,135 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import List from "@/components/Genre/List.astro";
+import FormSearch from "@/components/React/FormSearch";
+import { getGenres, getTrendingDatas } from "@/utils/data";
+import { movieListsTopic, tvListsTopic } from "@/utils/constant";
+import CardAll from "@/components/AllTrending/Card.astro";
+import CardMovie from "@/components/Movie/Card.astro";
+import CardTv from "@/components/Tv/Card.astro";
+import Link from "@/components/ui/Link.astro";
+import type { Movie } from "@/types/movie";
+import type { Tv } from "@/types/tv";
+import { allTrendingListTypes } from "@/utils/constant";
+import NavLink from "@/components/ui/NavLink.astro";
+import FilterTime from "@/components/React/FilterTime";
+
+export const prerender = false;
+
+const { searchParams } = Astro.url;
+
+const type = searchParams.get("type");
+
+const page = searchParams.get("page");
+
+const time = searchParams.get("time");
+
+const genreListMovies: Array<Genre> = await getGenres("movie");
+const genreListTv: Array<Genre> = await getGenres("tv");
+
+const datas = await getTrendingDatas(
+  type as "all" | "movie" | "tv",
+  time as "day" | "week",
+  Number(page)
+);
+---
+
+<Layout
+  title={`Trending ~ ${type?.charAt(0).toUpperCase()}${type?.slice(1)}`}
+  description=""
+>
+  <section class="w-full flex flex-col gap-4" slot="main-sidebar">
+    <div class="w-full">
+      <h1 class="mb-3 text-xl font-bold">Movies</h1>
+      <div class="px-3">
+        <FormSearch type="movie" client:load />
+      </div>
+      <List
+        lists={genreListMovies}
+        type="movie"
+        customLists={movieListsTopic}
+      />
+    </div>
+    <div class="w-full">
+      <h1 class="mb-3 text-xl font-bold">Tv Show</h1>
+      <div class="px-3">
+        <FormSearch type="tv" client:load />
+      </div>
+      <List lists={genreListTv} type="tv" customLists={tvListsTopic} />
+    </div>
+  </section>
+  <main class="col-span-4 w-full flex flex-col gap-4">
+    <h1 class="font-bold text-2xl">
+      Trending {`${type?.charAt(0).toUpperCase()}${type?.slice(1)}`}
+    </h1>
+    <div class="mt-5 relative">
+      <ul class="flex w-full gap-4 items-center">
+        {
+          allTrendingListTypes.map((list) => (
+            <li>
+              <NavLink
+                href={`${list.href(time as string)}`}
+                activeClass="bg-opacity-40"
+                customCondition={type === list.name.toLowerCase()}
+                class="bg-red-600 px-4 py-3 rounded-xl hover:shadow-lg hover:shadow-red-400 transition-all duration-200 ease-in-out"
+              >
+                {list.name}
+              </NavLink>
+            </li>
+          ))
+        }
+      </ul>
+      <FilterTime
+        time={time as string}
+        filter={type as string}
+        page={Number(page)}
+        client:load
+      />
+    </div>
+    <section class="w-full mt-5 grid grid-cols-4 gap-4">
+      {
+        type === "all"
+          ? datas.results.map((list: AllTrending) => <CardAll {...list} />)
+          : type === "movie"
+            ? datas.results.map((list: Movie) => <CardMovie {...list} />)
+            : type === "tv"
+              ? datas.results.map((list: Tv) => <CardTv {...list} />)
+              : null
+      }
+    </section>
+    <div class="flex w-full justify-between items-center">
+      <h3 class="font-semibold text-lg">{datas.page} of {datas.total_pages}</h3>
+      <div class="flex gap-6 items-center">
+        {
+          Number(page) === 1 || Number(page) < 0 ? null : (
+            <Link
+              class="px-6 py-3 bg-slate-800 rounded-md"
+              href={`/trending?page=${Number(page) - 1}&type=${type}&time=${time}`}
+            >
+              Prev
+            </Link>
+          )
+        }
+        {
+          datas.total_pages > 500 ? (
+            Number(page) === 500 ? null : (
+              <Link
+                href={`/trending?page=${Number(page) + 1}&type=${type}&time=${time}`}
+                class="px-6 py-3 bg-slate-800 rounded-md"
+              >
+                Next
+              </Link>
+            )
+          ) : Number(page) === datas.total_pages ? null : (
+            <Link
+              href={`/trending?page=${Number(page) + 1}&type=${type}&time=${time}`}
+              class="px-6 py-3 bg-slate-800 rounded-md"
+            >
+              Next
+            </Link>
+          )
+        }
+      </div>
+    </div>
+  </main>
+</Layout>

@@ -22,7 +22,7 @@ const genreListMovies: Array<Genre> = await getGenres("movie");
 const detailMovie = (await getDetail("movie", id as string)) as Movie;
 const datas = await getSimiliarDatas("movie", id as string, Number(page));
 
-const movies = datas.results.filter(
+const movies = datas.results?.filter(
   (movie: Movie) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"

@@ -1,4 +1,5 @@
 import type { MDetail, Movie } from "./movie";
+import type { OriginalLanguage } from "./trending";
 import type { VDetail, Tv } from "./tv";
 
 enum ISO639_1 {
@@ -62,5 +63,26 @@ declare global {
     character: string;
     credit_id: string;
     order: number;
+  };
+  type AllTrending = {
+    backdrop_path: string;
+    id: number;
+    title?: string;
+    original_title?: string;
+    overview: string;
+    poster_path: string;
+    media_type: "movie" | "tv";
+    adult: boolean;
+    original_language: OriginalLanguage;
+    genre_ids: number[];
+    popularity: number;
+    release_date?: Date;
+    video?: boolean;
+    vote_average: number;
+    vote_count: number;
+    name?: string;
+    original_name?: string;
+    first_air_date?: Date;
+    origin_country?: string[];
   };
 }

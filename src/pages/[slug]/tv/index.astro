@@ -6,6 +6,7 @@ import Card from "@/components/Tv/Card.astro";
 import Link from "@/components/ui/Link.astro";
 import { getGenres, getDatas } from "@/utils/data";
 import { tvListsTopic } from "@/utils/constant";
+import FormSearch from "@/components/React/FormSearch";
 
 const { searchParams } = Astro.url;
 
@@ -17,7 +18,7 @@ const { slug } = Astro.params;
 const genreListTv: Array<Genre> = await getGenres("tv");
 const datas = await getDatas("tv", slug as string, Number(page));
 
-const shows = datas.results.filter(
+const shows = datas.results?.filter(
   (movie: Tv) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"
@@ -33,6 +34,9 @@ const nameSlug = slug
 <Layout description="" title={`Movie`}
   ><section class="w-full" slot="main-sidebar">
     <h1 class="mb-3 text-xl font-bold">Tv Show</h1>
+    <div class="px-3">
+      <FormSearch type="tv" client:load />
+    </div>
     <List lists={genreListTv} type="tv" customLists={tvListsTopic} />
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">

@@ -11,3 +11,18 @@ export const tvListsTopic = [
   { name: "Airing Today", href: "/airing_today/tv" },
   { name: "Top Rated", href: "/top_rated/tv" },
 ];
+
+export const allTrendingListTypes = [
+  {
+    name: "All",
+    href: (time: string) => `/trending?page=1&type=all&time=${time}`,
+  },
+  {
+    name: "Movie",
+    href: (time: string) => `/trending?page=1&type=movie&time=${time}`,
+  },
+  {
+    name: "Tv",
+    href: (time: string) => `/trending?page=1&type=tv&time=${time}`,
+  },
+];

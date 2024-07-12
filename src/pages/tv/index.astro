@@ -17,7 +17,7 @@ const genre = searchParams.get("genre");
 const genreListTv: Array<Genre> = await getGenres("tv");
 const datas = await getDiscover("tv", Number(genre), Number(page));
 
-const shows = datas.results.filter(
+const shows = datas.results?.filter(
   (movie: Tv) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"

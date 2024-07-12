@@ -2,8 +2,6 @@ import { supabase } from "@/lib/supabase/supabase";
 import { defineAction, z } from "astro:actions";
 import { getSession } from "auth-astro/server";
 
-// email, country,
-
 export const server = {
   updateUser: defineAction({
     accept: "form",
@@ -69,10 +67,25 @@ export const server = {
     input: z.object({
       id: z.string(),
     }),
-    async handler({ id }, context) {
+    async handler({ id }) {
       const { error } = await supabase.from("saved_list").delete().eq("id", id);
 
       if (error) return { success: false };
+      return { success: true };
+    },
+  }),
+  addComment: defineAction({
+    accept: "json",
+    input: z.object({
+      comment: z.string().min(10, {
+        message: "Comment must be at least 10 characters long",
+      }),
+      image: z.object({
+        url: z.string().url(),
+        path: z.string(),
+      }),
+    }),
+    async handler(input, context) {
       return { success: true };
     },
   }),

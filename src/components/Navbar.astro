@@ -28,7 +28,7 @@ const { pathname } = Astro.url;
 ---
 
 <header
-  class="w-full flex justify-between bg-yellow-400 bg-opacity-75 px-6 items-center"
+  class="w-full flex justify-between bg-yellow-400 bg-opacity-75 px-6 py-3 items-center"
 >
   <Image
     src={"/Logo.png"}
@@ -68,6 +68,7 @@ const { pathname } = Astro.url;
             width={50}
             height={50}
             class="rounded-full"
+            loading="eager"
           />
         </ProfileModal>
       ) : (

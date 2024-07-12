@@ -6,6 +6,7 @@ import { movieListsTopic } from "@/utils/constant";
 import { getGenres, getDatas } from "@/utils/data";
 import Card from "@/components/Movie/Card.astro";
 import Link from "@/components/ui/Link.astro";
+import FormSearch from "@/components/React/FormSearch";
 
 export const prerender = false;
 
@@ -20,7 +21,7 @@ const { slug } = Astro.params;
 const genreListMovies: Array<Genre> = await getGenres("movie");
 const datas = await getDatas("movie", slug as string, Number(page));
 
-const movies = datas.results.filter(
+const movies = datas.results?.filter(
   (movie: Movie) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"
@@ -36,6 +37,9 @@ const nameSlug = slug
 <Layout description="" title={`Movie ~ ${nameSlug}`}
   ><section class="w-full" slot="main-sidebar">
     <h1 class="mb-3 text-xl font-bold">Movies</h1>
+    <div class="px-3">
+      <FormSearch type="movie" client:load />
+    </div>
     <List lists={genreListMovies} type="movie" customLists={movieListsTopic} />
   </section>
   <main class="col-span-4 w-full flex flex-col gap-4">

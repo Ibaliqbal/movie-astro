@@ -3,7 +3,6 @@ import { ViewTransitions } from "astro:transitions";
 import Banner from "@/components/Banner.astro";
 import { getSession } from "auth-astro/server";
 import { checkValidUser } from "@/lib/supabase/function";
-import { storedUser } from "@/store";
 
 interface Props {
   title: string;
@@ -11,13 +10,6 @@ interface Props {
   poster: string;
   name_transition: string;
   id: string;
-}
-
-const session = await getSession(Astro.request);
-
-if (session) {
-  const data = await checkValidUser((session.user?.email as string) ?? "");
-  storedUser(data.data);
 }
 
 const { title, description, poster, name_transition, id } = Astro.props;

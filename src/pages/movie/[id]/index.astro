@@ -12,11 +12,15 @@ import Card from "@/components/Movie/Card.astro";
 import Link from "@/components/ui/Link.astro";
 import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
-import { user } from "@/store";
 import LikeAction from "@/components/React/LikeAction";
 import { YouTube } from "@astro-community/astro-embed-youtube";
+import { getSession } from "auth-astro/server";
 
 export const prerender = false;
+
+const session = await getSession(Astro.request);
+
+const { user } = Astro.locals;
 
 const urlImage = import.meta.env.PUBLIC_TMDB_IMG_URL;
 
@@ -75,10 +79,11 @@ const movies = similarMovies.results.filter(
               poster: data.poster_path,
               list_id: data.id,
               release_list: data.release_date,
-              user_id: user.get()?.id as string,
+              user_id: user?.id as string,
               type: "movie",
             }}
             id={data.id}
+            isAuth={!!session}
             client:load
           />
         </div>

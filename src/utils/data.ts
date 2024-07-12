@@ -111,3 +111,18 @@ export async function getCredits(id: string, type: TArg) {
 
   return result.cast as Array<Credit>;
 }
+
+export async function getTrendingDatas(
+  type: "movie" | "tv" | "all",
+  time: "day" | "week",
+  page: number
+) {
+  const res = await fetch(
+    `${url}/trending/${type}/${time}?api_key=${apiKey}&page=${page}`,
+    options
+  );
+
+  const result = await res.json();
+
+  return result;
+}

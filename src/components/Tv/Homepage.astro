@@ -1,6 +1,6 @@
 ---
 import type { Tv } from "@/types/tv";
-import { getDiscover, getDatas } from "@/utils/data";
+import { getDiscover, getDatas, getTrendingDatas } from "@/utils/data";
 import Link from "@/components/ui/Link.astro";
 import Card from "./Card.astro";
 
@@ -10,39 +10,23 @@ type Props = {
 
 const { genreTv } = Astro.props;
 
-const popular = await getDatas("tv", "popular", 1);
-const shows_popular = popular.results.filter(
-  (movie: Tv) =>
-    typeof movie.poster_path === "string" &&
-    typeof movie.backdrop_path === "string"
-) as TvLists;
+const datasTrending = await getTrendingDatas("all", "day", 1);
 
-const popularIds = new Set(shows_popular.map((movie) => movie.id));
+const popularIds = new Set(
+  datasTrending.results.map((movie: AllTrending) => movie.id)
+);
 
 const discover = await getDiscover("tv", genreTv, 1);
 const shows_discover = discover.results
-  .filter(
-    (movie: Tv) =>
-      typeof movie.poster_path === "string" &&
-      typeof movie.backdrop_path === "string"
+  ?.filter(
+    (data: Tv) =>
+      typeof data.poster_path === "string" &&
+      typeof data.backdrop_path === "string"
   )
-  .filter((movie: Tv) => !popularIds.has(movie.id)) as TvLists;
+  ?.filter((data: Tv) => !popularIds.has(data.id)) as TvLists;
 ---
 
 <main class="flex flex-col gap-7">
-  <section class="w-full">
-    <div class="w-full flex justify-between items-center">
-      <h1 class="text-2xl font-bold">List Tv Popular</h1>
-      <Link
-        href={`/popular/tv?page=1`}
-        class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"
-        >See more</Link
-      >
-    </div>
-    <section class="w-full mt-3 grid grid-cols-4 gap-4">
-      {shows_popular.map((movie) => <Card {...movie} />)}
-    </section>
-  </section>
   <section class="w-full">
     <div class="w-full flex justify-between items-center">
       <h1 class="text-2xl font-bold">Tv Lists ( Animation )</h1>

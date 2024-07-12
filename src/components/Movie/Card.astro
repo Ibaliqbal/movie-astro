@@ -2,6 +2,7 @@
 import type { Movie } from "@/types/movie";
 import { Image } from "astro:assets";
 import { format } from "date-fns";
+import Link from "@/components/ui/Link.astro";
 type Props = Movie;
 
 const { original_title, id, poster_path, release_date } = Astro.props;
@@ -11,7 +12,7 @@ const { original_title, id, poster_path, release_date } = Astro.props;
   class="w-full card flex flex-col h-full rounded-md"
   transition:name={`movie ${id} card`}
 >
-  <a href={`/movie/${id}`} class="flex flex-col h-full">
+  <Link href={`/movie/${id}`} class="flex flex-col h-full">
     {
       poster_path === undefined || poster_path === null ? (
         <div
@@ -43,7 +44,7 @@ const { original_title, id, poster_path, release_date } = Astro.props;
         }
       </p>
     </div>
-  </a>
+  </Link>
 </article>
 
 <style>

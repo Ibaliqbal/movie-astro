@@ -2,21 +2,25 @@
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "@/components/Navbar.astro";
 import SidebarLayout from "./SidebarLayout.astro";
-import { getSession } from "auth-astro/server";
-import { storedUser } from "@/store";
-import { checkValidUser } from "@/lib/supabase/function";
+import CarouselSection from "@/components/React/Carousel";
+import { getDatas } from "@/utils/data";
+import type { Movie } from "@/types/movie";
 
 interface Props {
   title: string;
   description: string;
 }
 
-const session = await getSession(Astro.request);
+let moviesUpcoming = await getDatas("movie", "upcoming", 1);
 
-if (session) {
-  const data = await checkValidUser((session.user?.email as string) ?? "");
-  storedUser(data.data);
-}
+const filteredMovies = moviesUpcoming.results
+  ?.filter(
+    (movie: Movie) =>
+      movie.backdrop_path !== undefined || movie.backdrop_path !== null
+  )
+  .splice(0, 6) as Movies;
+
+const urlImg = import.meta.env.PUBLIC_TMDB_IMG_URL_ORIGINAL_SIZE;
 
 const { title, description } = Astro.props;
 const { pathname } = Astro.url;
@@ -35,6 +39,11 @@ const { pathname } = Astro.url;
   </head>
   <body class="bg-black bg-opacity-95 text-white">
     {pathname === "/signin" ? null : <Navbar />}
+    {
+      pathname === "/signin" ? null : (
+        <CarouselSection movies={filteredMovies} client:load />
+      )
+    }
     <main
       class={`max-w-layout w-full container ${pathname === "/signin" || pathname === "/favorite" ? "" : "grid grid-cols-5 gap-5 pb-10 pt-8"}`}
       transition:animate="none"

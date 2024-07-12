@@ -1,0 +1,61 @@
+---
+import { Image } from "astro:assets";
+import { format } from "date-fns";
+import Link from "../ui/Link.astro";
+
+type Props = AllTrending;
+
+const {
+  media_type,
+  id,
+  first_air_date,
+  original_name,
+  original_title,
+  release_date,
+  poster_path,
+} = Astro.props;
+---
+
+<article
+  class="w-full card flex flex-col h-full rounded-md"
+  transition:name={`${media_type} ${id} card`}
+>
+  <Link href={`/${media_type}/${id}`} class="flex flex-col h-full">
+    {
+      poster_path === undefined || poster_path === null ? (
+        <div
+          class="w-full aspect-[1/1.5] bg-slate-500 bg-opacity-45 rounded-t-md"
+          transition:name={`${media_type} ${id} poster`}
+        />
+      ) : (
+        <Image
+          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${poster_path}`}
+          alt="Poster"
+          loading="lazy"
+          inferSize={true}
+          class="w-full aspect-auto rounded-t-md"
+          transition:name={`${media_type} ${id} poster`}
+        />
+      )
+    }
+
+    <div class="p-3 flex-grow">
+      <h1 transition:name={`${media_type} ${id} title`} class="text-lg">
+        {original_title || original_name}
+      </h1>
+      <p transition:name={`${media_type} ${id} date`}>
+        {
+          release_date
+            ? format(
+                release_date ? new Date(release_date) : new Date(),
+                "MMMM dd, yyyy"
+              )
+            : format(
+                first_air_date ? new Date(first_air_date) : new Date(),
+                "MMMM dd, yyyy"
+              )
+        }
+      </p>
+    </div>
+  </Link>
+</article>

@@ -19,7 +19,7 @@ console.log(query);
 const genreListMovies: Array<Genre> = await getGenres("movie");
 const datas = await getSearchDatas("movie", query, Number(page));
 
-const movies = datas.results.filter(
+const movies = datas.results?.filter(
   (movie: Movie) =>
     typeof movie.poster_path === "string" &&
     typeof movie.backdrop_path === "string"

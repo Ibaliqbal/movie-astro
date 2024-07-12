@@ -8,7 +8,7 @@ const session = await getSession(Astro.request);
 const { searchParams } = Astro.url;
 const callbackUrl = searchParams.get("callbackUrl");
 
-if (session) return Astro.redirect("/");
+// if (session) return Astro.redirect("/");
 ---
 
 <Layout title="Sign in" description="Sign In page for user">
