@@ -21,7 +21,7 @@ const { original_title, id, poster_path, release_date } = Astro.props;
         />
       ) : (
         <Image
-          src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${poster_path}`}
           alt="Poster"
           loading="eager"
           inferSize={true}

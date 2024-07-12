@@ -17,7 +17,7 @@ const { original_name, id, poster_path, first_air_date } = Astro.props;
         <div class="w-full aspect-[1/1.5] rounded-t-md" />
       ) : (
         <Image
-          src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${poster_path}`}
           alt="Poster"
           inferSize
           class="w-full aspect-auto rounded-t-md"
