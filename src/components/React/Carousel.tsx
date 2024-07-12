@@ -22,7 +22,7 @@ const CarouselSection = ({ movies }: { movies: Movies }) => {
               src={`${import.meta.env.PUBLIC_TMDB_IMG_URL_ORIGINAL_SIZE}${
                 movie.poster_path
               }`}
-              loading="eager"
+              loading="lazy"
               width={500}
               height={500}
               alt={movie.title}

@@ -3,9 +3,10 @@ import { Image } from "astro:assets";
 import { format } from "date-fns";
 import Link from "../ui/Link.astro";
 
-type Props = AllTrending;
+type Props = { i: number } & AllTrending;
 
 const {
+  i,
   media_type,
   id,
   first_air_date,
@@ -31,7 +32,7 @@ const {
         <Image
           src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${poster_path}`}
           alt="Poster"
-          loading="lazy"
+          loading={i < 4 ? "eager" : "lazy"}
           inferSize={true}
           class="w-full aspect-auto rounded-t-md"
           transition:name={`${media_type} ${id} poster`}

@@ -19,7 +19,11 @@ const datas = await getTrendingDatas(type, time, 1);
       >
     </div>
     <section class="w-full mt-3 grid grid-cols-4 gap-4">
-      {datas.results.map((data: AllTrending) => <Card {...data} />)}
+      {
+        datas.results.map((data: AllTrending, i: number) => (
+          <Card i={i} {...data} />
+        ))
+      }
     </section>
   </section>
 </main>
