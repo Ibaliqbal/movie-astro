@@ -14,7 +14,7 @@ const genre = searchParams.get("genre");
 const { lists, type, customLists } = Astro.props;
 ---
 
-<ul class="w-full py-5 px-2 flex flex-wrap gap-10">
+<ul class="w-full py-5 px-2 flex flex-wrap lg:gap-10 gap-8">
   {
     lists.map((list) => (
       <li>

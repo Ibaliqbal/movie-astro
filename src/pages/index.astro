@@ -36,7 +36,7 @@ const genreListTv: Array<Genre> = await getGenres("tv");
       <ListGenre lists={genreListTv} type="tv" customLists={tvListsTopic} />
     </div>
   </section>
-  <main class="col-span-4 w-full flex flex-col gap-4">
+  <main class="lg:col-span-4 w-full flex flex-col gap-4 px-4">
     <HomepageTrending />
     <HomepageTv genreTv={genreTv} />
     <HomepageMovie genreMovie={genreMovie} />

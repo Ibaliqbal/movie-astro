@@ -126,3 +126,81 @@ export async function getTrendingDatas(
 
   return result;
 }
+
+export async function getSeasonData(series_id: number, season_number: number) {
+  const res = await fetch(
+    `${url}/tv/${series_id}/season/${season_number}?api_key=${apiKey}`
+  );
+
+  const result = await res.json();
+
+  return result;
+}
+
+export async function getVideoCompilationTvSeason(
+  series_id: number,
+  season_number: number
+) {
+  const res = await fetch(
+    `${url}/tv/${series_id}/season/${season_number}/videos?api_key=${apiKey}`
+  );
+
+  const result = await res.json();
+
+  return result.results;
+}
+
+export async function getCreditsSeason(
+  series_id: number,
+  season_number: number
+) {
+  const res = await fetch(
+    `${url}/tv/${series_id}/season/${season_number}/credits?api_key=${apiKey}`
+  );
+
+  const result = await res.json();
+
+  return result.cast as Array<Credit>;
+}
+
+export async function getEpisodeData(
+  series_id: number,
+  season_number: number,
+  episode_number: number
+) {
+  const res = await fetch(
+    `${url}/tv/${series_id}/season/${season_number}/episode/${episode_number}?api_key=${apiKey}`
+  );
+
+  const result = await res.json();
+
+  return result as EpisodeById;
+}
+
+export async function getVideoCompilationTvEpisode(
+  series_id: number,
+  season_number: number,
+  episode_number: number
+) {
+  const res = await fetch(
+    `${url}/tv/${series_id}/season/${season_number}/episode/${episode_number}/videos?api_key=${apiKey}`
+  );
+
+  const result = await res.json();
+
+  return result.results;
+}
+
+export async function getCreditsEpisode(
+  series_id: number,
+  season_number: number,
+  episode_number: number
+) {
+  const res = await fetch(
+    `${url}/tv/${series_id}/season/${season_number}/episode/${episode_number}/credits?api_key=${apiKey}`
+  );
+
+  const result = await res.json();
+
+  return result.cast as Array<Credit>;
+}

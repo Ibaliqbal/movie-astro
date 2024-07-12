@@ -8,7 +8,7 @@ const { original_name, id, poster_path, first_air_date } = Astro.props;
 ---
 
 <article
-  class="w-full card flex flex-col h-full rounded-md"
+  class="w-full card flex flex-col h-full rounded-md hover:scale-95 transition-transform ease-in-out duration-300"
   transition:name={`tv ${id} card`}
 >
   <a href={`/tv/${id}`} class="flex flex-col h-full">

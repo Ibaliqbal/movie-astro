@@ -1,52 +1,41 @@
 ---
+import Card from "@/components/Tv/Episode/Card.astro";
 import DetailLayout from "@/layouts/DetailLayout.astro";
-import { Image } from "astro:assets";
-import type { Tv } from "@/types/tv";
 import {
   getDetail,
-  getSimiliarDatas,
-  getVideoCompilation,
-  getCredits,
+  getSeasonData,
+  getVideoCompilationTvSeason,
+  getCreditsSeason,
 } from "@/utils/data";
-import Link from "@/components/ui/Link.astro";
-import LikeAction from "@/components/React/LikeAction";
+import { YouTube } from "@astro-community/astro-embed-youtube";
+import { Image } from "astro:assets";
 import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
-import Card from "@/components/Tv/Card.astro";
-import { YouTube } from "@astro-community/astro-embed-youtube";
-
-export const prerender = false;
-
-const { user } = Astro.locals;
-
-const { id } = Astro.params;
 
 const urlImage = import.meta.env.PUBLIC_TMDB_IMG_URL;
 
-const videoCompilation = (await getVideoCompilation(
-  "tv",
-  id as string
+export const prerender = false;
+
+const { id, number } = Astro.params;
+
+const episodes = await getSeasonData(Number(id), Number(number));
+
+const data = (await getDetail("tv", id as string)) as DetailTv;
+
+const videoCompilation = (await getVideoCompilationTvSeason(
+  Number(id),
+  Number(number)
 )) as Array<Video>;
 
-const similarShows = await getSimiliarDatas("tv", id as string, 1);
-
-const credits = await getCredits(id as string, "tv");
-
-const shows = similarShows.results?.filter(
-  (movie: Tv) =>
-    typeof movie.poster_path === "string" &&
-    typeof movie.backdrop_path === "string"
-) as TvLists;
-
-const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
+const credits = await getCreditsSeason(Number(id), Number(number));
 ---
 
 <DetailLayout
   name_transition="tv"
   id={(id as string) ?? ""}
   poster={data.backdrop_path}
-  title={`Tv ~ ${data.original_name}`}
-  description={`Once detail movie with id ${id}`}
+  title={`Tv Season ~ ${episodes.name}`}
+  description={`Detail of the season tv show with id ${id}`}
 >
   <main class="w-full">
     <section
@@ -54,7 +43,7 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
     >
       <div class="lg:col-span-1 md:self-start self-center">
         <Image
-          src={`${urlImage}${data.poster_path}`}
+          src={`${urlImage}${episodes.poster_path}`}
           alt={"Poster"}
           inferSize
           loading="eager"
@@ -66,66 +55,28 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
         />
       </div>
       <article class="lg:col-span-2 flex flex-col gap-4">
-        <div class="w-full flex justify-between items-center">
-          <h1
-            transition:name={`tv ${id} title`}
-            class="lg:text-5xl text-3xl font-bold"
-          >
-            {data.original_name}
-          </h1>
-          <LikeAction
-            dataAdd={{
-              title: data.original_name,
-              poster: data.poster_path,
-              list_id: data.id,
-              release_list: data.first_air_date,
-              user_id: user?.id as string,
-              type: "tv",
-            }}
-            id={data.id}
-            isAuth={!!user}
-            client:load
-          />
-        </div>
-        <p class="text-justify lg:text-xl text-lg">{data.overview}</p>
-        <p class="lg:text-xl text-lg" transition:name={`tv ${id} date`}>
+        <h1
+          transition:name={`season ${id} title`}
+          class="lg:text-5xl text-3xl font-bold"
+        >
+          {episodes.name}
+        </h1>
+        <p class="text-justify lg:text-xl text-lg">{episodes.overview}</p>
+        <p class="lg:text-xl text-lg" transition:name={`season ${id} date`}>
           Release : {
             format(
-              data.first_air_date ? new Date(data.first_air_date) : new Date(),
+              episodes.air_date ? new Date(episodes.air_date) : new Date(),
               "MMMM dd, yyyy"
             )
           }
         </p>
-        {
-          data.homepage && (
-            <p class="lg:text-xl text-lg">
-              Website :
-              <a
-                href={data.homepage}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-blue-600"
-              >
-                {data.homepage}
-              </a>
-            </p>
-          )
-        }
         <p class="lg:text-xl text-lg">
-          Total Eps : {data.number_of_episodes} / {data.episode_run_time[0]} minutes
-        </p>
-        <p class="lg:text-xl text-lg">
-          Total Season : {data.seasons.length}
+          Total Eps : {episodes?.episodes?.length}
         </p>
         <p class="lg:text-xl text-lg flex items-center gap-3">
-          Rating : {data.vote_average.toFixed(2)}
+          Rating : {episodes.vote_average.toFixed(2)}
           <FaStar className="text-yellow-500" />
         </p>
-        <Link
-          class="text-blue-600 hover:underline-offset-2 hover:underline lg:text-xl text-lg"
-          href={`/tv/${id}/seasons`}
-          >See All Seasons
-        </Link>
       </article>
     </section>
     {
@@ -177,18 +128,15 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
       ) : null
     }
     <section class="w-full mt-5 px-4">
-      <div class="w-full flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Similar Movies</h1>
-        <Link
-          href={`/tv/${data.id}/similar?page=1`}
-          class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"
-          >See more</Link
-        >
-      </div>
+      <h1 class="text-2xl font-bold">All Episode</h1>
       <section
         class="w-full grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-4"
       >
-        {shows.map((list) => <Card {...list} />)}
+        {
+          episodes.episodes.map((episode: EpsiodeFromSeason) => (
+            <Card id_tv={data.id} {...episode} />
+          ))
+        }
       </section>
     </section>
   </main>

@@ -11,8 +11,6 @@ export const server = {
       country: z.string(),
     }),
     handler: async ({ name, email, country }) => {
-      // call a mailing service, or store to a database
-
       const { error, data } = await supabase
         .from("users")
         .update({ email, country, name })

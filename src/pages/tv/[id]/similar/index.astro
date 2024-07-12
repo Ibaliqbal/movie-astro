@@ -28,7 +28,9 @@ const shows = datas.results?.filter(
 ) as TvLists;
 ---
 
-<Layout description="" title={`Similar Movies ~ "${detailShow.original_name}"`}
+<Layout
+  description={`List of tv show with similar based on ${detailShow.original_name}`}
+  title={`Similar Tv ~ "${detailShow.original_name}"`}
   ><section class="w-full" slot="main-sidebar">
     <h1 class="mb-3 text-xl font-bold">Movies</h1>
     <div class="px-3">
@@ -36,11 +38,13 @@ const shows = datas.results?.filter(
     </div>
     <List lists={genreListTv} type="tv" customLists={tvListsTopic} />
   </section>
-  <main class="col-span-4 w-full flex flex-col gap-4">
+  <main class="col-span-4 w-full flex flex-col gap-4 px-4">
     <h1 class="font-bold text-2xl">
       Similar Movies based "{detailShow.original_name}"
     </h1>
-    <section class="w-full mt-3 grid grid-cols-4 gap-4">
+    <section
+      class="w-full mt-3 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4"
+    >
       {shows.map((list) => <Card {...list} />)}
     </section>
     <div class="flex w-full justify-between items-center">

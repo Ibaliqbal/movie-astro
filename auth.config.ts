@@ -1,7 +1,5 @@
 import { defineConfig } from "auth-astro";
 import Google from "@auth/core/providers/google";
-import Credentials from "@auth/core/providers/credentials";
-import { supabase } from "@/lib/supabase/supabase";
 import { checkValidUser, registerUser } from "@/lib/supabase/function";
 
 export default defineConfig({
@@ -27,9 +25,6 @@ export default defineConfig({
             image: user.image,
           });
         }
-
-        console.log("Registered", user.email, user.name, user.image);
-        console.log(checkUser);
       }
 
       return token;

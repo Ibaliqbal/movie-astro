@@ -29,9 +29,12 @@ const datas = await getFavorite(
 );
 ---
 
-<Layout title="Favorite" description="">
+<Layout
+  title="Favorite"
+  description={`Page Favorite user list with filter ${filter}`}
+>
   <main class="w-full flex flex-col mt-8">
-    <div class="flex gap-4 items-center">
+    <div class="flex gap-4 flex-wrap items-center px-4">
       <NavLink
         href={"/favorite?filter=all"}
         customCondition={filter === "all"}
@@ -51,7 +54,9 @@ const datas = await getFavorite(
         activeClass="bg-opacity-40">Tv Shows</NavLink
       >
     </div>
-    <section class="w-full grid grid-cols-5 gap-4 mt-5 pb-16">
+    <section
+      class="w-full grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-4 mt-5 px-4 pb-16"
+    >
       {
         datas.map((data) => (
           <article
@@ -69,7 +74,7 @@ const datas = await getFavorite(
                 />
               ) : (
                 <Image
-                  src={`https://image.tmdb.org/t/p/w500${data.poster}`}
+                  src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster}`}
                   alt="Poster"
                   loading="eager"
                   inferSize={true}

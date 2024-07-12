@@ -13,7 +13,7 @@ const LikeAction = ({
     poster: string;
     list_id: number;
     release_list: string | Date;
-    type: "movie" | "tv";
+    type: "movie" | "tv" | "tv season" | "tv episode";
     user_id: string;
   };
   id: number;
@@ -36,7 +36,7 @@ const LikeAction = ({
 
   return (
     <button
-      className="p-3 rounded-full text-xl border-2 border-white disabled:cursor-wait"
+      className="p-3 rounded-full lg:text-xl text-lg border-2 border-white disabled:cursor-wait"
       disabled={isLoading}
       onClick={async () => {
         const findId = favorite.find((list) => list.list_id === id);

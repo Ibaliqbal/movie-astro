@@ -1,0 +1,27 @@
+---
+import SeasonSection from "@/components/Tv/Season/SeasonSection.astro";
+import DetailLayout from "@/layouts/DetailLayout.astro";
+import { getDetail } from "@/utils/data";
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
+---
+
+<DetailLayout
+  name_transition="tv"
+  id={(id as string) ?? ""}
+  poster={data.backdrop_path}
+  title={`Tv Season ~ ${data.original_name}`}
+  description={`List all season tv shows with id ${id}`}
+>
+  <main class="w-full py-10 flex flex-col gap-5">
+    {
+      data.seasons.map((season) => (
+        <SeasonSection id_tv={Number(id)} {...season} />
+      ))
+    }
+  </main>
+</DetailLayout>

@@ -1,0 +1,40 @@
+---
+import type { Season } from "@/types/tv";
+import { getSeasonData } from "@/utils/data";
+import Card from "../Episode/Card.astro";
+import Link from "@/components/ui/Link.astro";
+type Props = { id_tv: number } & Season;
+const { name, season_number, id_tv, episode_count } = Astro.props;
+
+const episodes = await getSeasonData(id_tv, season_number);
+---
+
+<article class="px-4">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold">{name}</h1>
+    <p class="text-lg font-semibold">
+      {episode_count}
+      {episode_count > 1 ? "episodes" : "episode"}
+    </p>
+  </div>
+  <section
+    class="w-full grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-4"
+  >
+    {
+      episodes.episodes
+        .splice(0, 5)
+        .map((episode: EpsiodeFromSeason) => (
+          <Card id_tv={id_tv} {...episode} />
+        ))
+    }
+    <div
+      class="w-full h-full text-blue-600 text-2xl grid place-items-center rounded-md"
+    >
+      <Link
+        href={`/tv/${id_tv}/seasons/${season_number}`}
+        class="hover:scale-105 transition-transform ease-in-out duration-300"
+        >See more</Link
+      >
+    </div>
+  </section>
+</article>

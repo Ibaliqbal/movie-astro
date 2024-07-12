@@ -1,0 +1,143 @@
+---
+import LikeAction from "@/components/React/LikeAction";
+import DetailLayout from "@/layouts/DetailLayout.astro";
+import {
+  getDetail,
+  getEpisodeData,
+  getCreditsEpisode,
+  getVideoCompilationTvEpisode,
+} from "@/utils/data";
+import { YouTube } from "@astro-community/astro-embed-youtube";
+import { Image } from "astro:assets";
+import { format } from "date-fns";
+import { FaStar } from "react-icons/fa";
+
+export const prerender = false;
+
+const urlImage = import.meta.env.PUBLIC_TMDB_IMG_URL;
+
+const { id: id_tv, number: season_number, episode: episode_id } = Astro.params;
+
+const data = (await getDetail("tv", id_tv as string)) as DetailTv;
+
+const episode = await getEpisodeData(
+  Number(id_tv),
+  Number(season_number),
+  Number(episode_id)
+);
+
+const videoCompilation = (await getVideoCompilationTvEpisode(
+  Number(id_tv),
+  Number(season_number),
+  Number(episode_id)
+)) as Array<Video>;
+
+const credits = await getCreditsEpisode(
+  Number(id_tv),
+  Number(season_number),
+  Number(episode_id)
+);
+---
+
+<DetailLayout
+  name_transition="tv"
+  id={(id_tv as string) ?? ""}
+  poster={data.backdrop_path}
+  title={`Tv ~ Season ${season_number} Episode ${episode_id}`}
+  description={`Detail of the episode tv show with id ${episode_id}`}
+>
+  <main class="w-full">
+    <section
+      class="w-full lg:grid lg:grid-cols-3 flex flex-col gap-4 pt-6 px-4"
+    >
+      <div class="lg:col-span-1 md:self-start self-center">
+        <Image
+          src={`${urlImage}${episode.still_path}`}
+          alt={"Poster"}
+          inferSize
+          loading="eager"
+          transition:name={`episode ${episode.episode_number}~${season_number} poster`}
+          width={350}
+          height={400}
+          sizes="(max-width: 768px) 50vw, 30vw"
+          class={"object-cover obejct-center lg:-mt-48 md:-mt-40 -mt-28"}
+        />
+      </div>
+      <article class="lg:col-span-2 flex flex-col gap-4">
+        <h1
+          transition:name={`episode ${episode.episode_number}~${season_number} title`}
+          class="lg:text-5xl text-3xl font-bold"
+        >
+          {episode.name}
+        </h1>
+        <p class="text-justify lg:text-xl text-lg">{episode.overview}</p>
+        <p
+          class="lg:text-xl text-lg"
+          transition:name={`episode ${episode.episode_number}~${season_number} date`}
+        >
+          Release : {
+            format(
+              episode.air_date ? new Date(episode.air_date) : new Date(),
+              "MMMM dd, yyyy"
+            )
+          }
+        </p>
+        <p class="lg:text-xl text-lg">
+          Runtime Epiosde : {episode.runtime} minutes
+        </p>
+        <p class="lg:text-xl text-lg flex items-center gap-3">
+          Rating : {episode.vote_average.toFixed(2)}
+          <FaStar className="text-yellow-500" />
+        </p>
+      </article>
+    </section>
+    {
+      videoCompilation.length > 0 ? (
+        <section class="w-full mt-5 px-4">
+          <h1 class="text-3xl font-semibold">Compilation / Trailer Video</h1>
+          <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
+            {videoCompilation.map((video) => (
+              <div class="md:w-1/4 w-1/2 flex-shrink-0">
+                <YouTube
+                  id={video.key}
+                  title={video.name}
+                  posterQuality="high"
+                />
+              </div>
+            ))}
+          </section>
+        </section>
+      ) : null
+    }
+    {
+      credits.length > 0 ? (
+        <section class="w-full mt-5 px-4">
+          <h1 class="text-3xl font-semibold">Credits</h1>
+          <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
+            {credits.map((credit) => (
+              <div class="md:w-1/4 w-1/2 flex-shrink-0 card rounded-lg">
+                {credit.profile_path === null ? (
+                  <div class="w-full aspect-[1/.8] bg-white grid place-items-center text-black font-bold">
+                    Photo not found
+                  </div>
+                ) : (
+                  <Image
+                    src={`${urlImage}${credit.profile_path}`}
+                    alt={`${credit.name}`}
+                    inferSize
+                    loading="lazy"
+                    class="w-full object-cover object-center aspect-[1/.8]"
+                  />
+                )}
+                <div class="mt-4">
+                  <h1 class="text-center">{`${credit.name} ( ${credit.original_name} )`}</h1>
+                  <p class="text-center">{credit.character}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+        </section>
+      ) : null
+    }
+  </main>
+</DetailLayout>

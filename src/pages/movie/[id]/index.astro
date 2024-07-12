@@ -14,11 +14,8 @@ import { format } from "date-fns";
 import { FaStar } from "react-icons/fa";
 import LikeAction from "@/components/React/LikeAction";
 import { YouTube } from "@astro-community/astro-embed-youtube";
-import { getSession } from "auth-astro/server";
 
 export const prerender = false;
-
-const session = await getSession(Astro.request);
 
 const { user } = Astro.locals;
 
@@ -52,8 +49,10 @@ const movies = similarMovies.results.filter(
   description={`Once detail movie with id ${id}`}
 >
   <main class="w-full">
-    <section class="w-full grid grid-cols-3 gap-4 pt-6">
-      <div class="col-span-1">
+    <section
+      class="w-full lg:grid lg:grid-cols-3 flex flex-col gap-4 pt-6 px-4"
+    >
+      <div class="lg:col-span-1 md:self-start self-center">
         <Image
           src={`${urlImage}${data.poster_path}`}
           alt={"Poster"}
@@ -62,14 +61,15 @@ const movies = similarMovies.results.filter(
           transition:name={`movie ${id} poster`}
           width={350}
           height={400}
-          class={"object-cover obejct-center -mt-56"}
+          sizes="(max-width: 768px) 50vw, 30vw"
+          class={"object-cover obejct-center lg:-mt-56 md:-mt-48 -mt-36"}
         />
       </div>
-      <article class="col-span-2 flex flex-col gap-4">
+      <article class="lg:col-span-2 flex flex-col gap-4">
         <div class="w-full flex justify-between items-center">
           <h1
             transition:name={`movie ${id} title`}
-            class="mt-3 text-5xl font-bold"
+            class="mt-3 lg:text-5xl text-3xl font-bold"
           >
             {data.original_title}
           </h1>
@@ -83,12 +83,12 @@ const movies = similarMovies.results.filter(
               type: "movie",
             }}
             id={data.id}
-            isAuth={!!session}
+            isAuth={!!user}
             client:load
           />
         </div>
-        <p class="text-justify text-xl">{data.overview}</p>
-        <p class="text-xl" transition:name={`movie ${id} date`}>
+        <p class="text-justify lg:text-xl text-lg">{data.overview}</p>
+        <p class="lg:text-xl text-lg" transition:name={`movie ${id} date`}>
           Release : {
             format(
               data.release_date ? new Date(data.release_date) : new Date(),
@@ -98,7 +98,7 @@ const movies = similarMovies.results.filter(
         </p>
         {
           data.homepage && (
-            <p class="text-xl">
+            <p class="lg:text-xl text-lg">
               Website :
               <a
                 href={data.homepage}
@@ -112,7 +112,7 @@ const movies = similarMovies.results.filter(
           )
         }
         <div class="flex gap-6 items-center">
-          <p class="text-xl">
+          <p class="lg:text-xl text-lg">
             Budget : {" "}
             <span>
               {
@@ -123,7 +123,7 @@ const movies = similarMovies.results.filter(
               }
             </span>
           </p>
-          <p class="text-xl">
+          <p class="lg:text-xl text-lg">
             Revenue : {" "}
             <span>
               {
@@ -135,8 +135,8 @@ const movies = similarMovies.results.filter(
             </span>
           </p>
         </div>
-        <p class="text-xl">Duration : {data.runtime} minutes</p>
-        <p class="text-xl flex items-center gap-3">
+        <p class="lg:text-xl text-lg">Duration : {data.runtime} minutes</p>
+        <p class="lg:text-xl text-lg flex items-center gap-3">
           Rating : {data.vote_average.toFixed(2)}
           <FaStar className="text-yellow-500" />
         </p>
@@ -144,11 +144,11 @@ const movies = similarMovies.results.filter(
     </section>
     {
       videoCompilation.length > 0 ? (
-        <section class="w-full mt-5">
+        <section class="w-full mt-5 px-4">
           <h1 class="text-3xl font-semibold">Compilation / Trailer Video</h1>
           <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
             {videoCompilation.map((video) => (
-              <div class="w-1/4 flex-shrink-0">
+              <div class="md:w-1/4 w-1/2 flex-shrink-0">
                 <YouTube
                   id={video.key}
                   posterQuality="high"
@@ -160,37 +160,37 @@ const movies = similarMovies.results.filter(
         </section>
       ) : null
     }
-    <section class="w-full mt-5">
-      <h1 class="text-3xl font-semibold">Credits</h1>
-      <section
-        class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6"
-      >
-        {
-          credits.map((credit) => (
-            <div class="w-1/4 flex-shrink-0 card rounded-lg">
-              {credit.profile_path === null ? (
-                <div class="w-full aspect-[1/.8] bg-white grid place-items-center text-black font-bold">
-                  Photo not found
+    {
+      credits.length > 0 ? (
+        <section class="w-full mt-5 px-4">
+          <h1 class="text-3xl font-semibold">Credits</h1>
+          <section class="slider-list max-w-full overflow-x-auto flex gap-4 pb-5 items-stretch mt-6">
+            {credits.map((credit) => (
+              <div class="md:w-1/4 w-1/2 flex-shrink-0 card rounded-lg">
+                {credit.profile_path === null ? (
+                  <div class="w-full aspect-[1/.8] bg-white grid place-items-center text-black font-bold">
+                    Photo not found
+                  </div>
+                ) : (
+                  <Image
+                    src={`${urlImage}${credit.profile_path}`}
+                    alt={`${credit.name}`}
+                    inferSize
+                    loading="eager"
+                    class="w-full object-cover object-center aspect-[1/.8]"
+                  />
+                )}
+                <div class="mt-4">
+                  <h1 class="text-center">{`${credit.name} ( ${credit.original_name} )`}</h1>
+                  <p class="text-center">{credit.character}</p>
                 </div>
-              ) : (
-                <Image
-                  src={`${urlImage}${credit.profile_path}`}
-                  alt={`${credit.name}`}
-                  inferSize
-                  loading="eager"
-                  class="w-full object-cover object-center aspect-[1/.8]"
-                />
-              )}
-              <div class="mt-4">
-                <h1 class="text-center">{`${credit.name} ( ${credit.original_name} )`}</h1>
-                <p class="text-center">{credit.character}</p>
               </div>
-            </div>
-          ))
-        }
-      </section>
-    </section>
-    <section class="w-full mt-5">
+            ))}
+          </section>
+        </section>
+      ) : null
+    }
+    <section class="w-full mt-5 px-4">
       <div class="w-full flex justify-between items-center">
         <h1 class="text-2xl font-bold">Similar Movies</h1>
         <Link
@@ -199,7 +199,9 @@ const movies = similarMovies.results.filter(
           >See more</Link
         >
       </div>
-      <section class="w-full grid grid-cols-4 gap-4 mt-4">
+      <section
+        class="w-full grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-4"
+      >
         {movies.map((movie) => <Card {...movie} />)}
       </section>
     </section>

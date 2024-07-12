@@ -1,6 +1,6 @@
 import type { MDetail, Movie } from "./movie";
 import type { OriginalLanguage } from "./trending";
-import type { VDetail, Tv } from "./tv";
+import type { VDetail, Tv, EpisodeType, Crew, GuestStar } from "./tv";
 
 enum ISO639_1 {
   Us = "US",
@@ -84,5 +84,37 @@ declare global {
     original_name?: string;
     first_air_date?: Date;
     origin_country?: string[];
+  };
+  type EpsiodeFromSeason = {
+    air_date: Date;
+    episode_number: number;
+    episode_type: "standard";
+    id: number;
+    name: string;
+    overview: string;
+    production_code: string;
+    runtime: number | null;
+    season_number: number;
+    show_id: number;
+    still_path: null | string;
+    vote_average: number;
+    vote_count: number;
+    crew: Crew[];
+    guest_stars: Crew[];
+  };
+  type EpisodeById = {
+    air_date: Date;
+    crew: any[];
+    episode_number: number;
+    guest_stars: GuestStar[];
+    name: string;
+    overview: string;
+    id: number;
+    production_code: string;
+    runtime: number;
+    season_number: number;
+    still_path: string;
+    vote_average: number;
+    vote_count: number;
   };
 }

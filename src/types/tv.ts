@@ -14,24 +14,6 @@ export type Tv = {
   vote_average: number;
   vote_count: number;
 };
-//       "backdrop_path": "/jLCuqeDkoSOmnyOoAm4PbiqoUV6.jpg",
-//       "genre_ids": [
-//         80,
-//         18
-//       ],
-//       "id": 549,
-//       "origin_country": [
-//         "US"
-//       ],
-//       "original_language": "en",
-//       "original_name": "Law & Order",
-//       "overview": "In cases ripped from the headlines, police investigate serious and often deadly crimes, weighing the evidence and questioning the suspects until someone is taken into custody. The district attorney's office then builds a case to convict the perpetrator by proving the person guilty beyond a reasonable doubt. Working together, these expert teams navigate all sides of the complex criminal justice system to make New York a safer place.",
-//       "popularity": 1969.446,
-//       "poster_path": "/m9zTQr4TYS98UFSiA1k0mMfECPe.jpg",
-//       "first_air_date": "1990-09-13",
-//       "name": "Law & Order",
-//       "vote_average": 7.351,
-//       "vote_count": 556
 
 export type VDetail = {
   adult: boolean;
@@ -125,4 +107,82 @@ export interface SpokenLanguage {
   english_name: string;
   iso_639_1: string;
   name: string;
+}
+export interface Fetch {
+  _id: string;
+  air_date: Date;
+  episodes: Episode[];
+  name: string;
+  overview: string;
+  id: number;
+  poster_path: string;
+  season_number: number;
+  vote_average: number;
+}
+
+export interface Episode {
+  air_date: Date;
+  episode_number: number;
+  episode_type: EpisodeType;
+  id: number;
+  name: string;
+  overview: string;
+  production_code: string;
+  runtime: number | null;
+  season_number: number;
+  show_id: number;
+  still_path: null | string;
+  vote_average: number;
+  vote_count: number;
+  crew: Crew[];
+  guest_stars: Crew[];
+}
+
+export interface Crew {
+  job?: string;
+  department?: string;
+  credit_id: string;
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: null | string;
+  character?: string;
+  order?: number;
+}
+
+export enum EpisodeType {
+  Standard = "standard",
+}
+export interface Fetch {
+  air_date: Date;
+  crew: any[];
+  episode_number: number;
+  guest_stars: GuestStar[];
+  name: string;
+  overview: string;
+  id: number;
+  production_code: string;
+  runtime: number;
+  season_number: number;
+  still_path: string;
+  vote_average: number;
+  vote_count: number;
+}
+
+export interface GuestStar {
+  character: string;
+  credit_id: string;
+  order: number;
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
 }

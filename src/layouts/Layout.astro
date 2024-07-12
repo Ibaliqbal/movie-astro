@@ -5,6 +5,7 @@ import SidebarLayout from "./SidebarLayout.astro";
 import CarouselSection from "@/components/React/Carousel";
 import { getDatas } from "@/utils/data";
 import type { Movie } from "@/types/movie";
+import Footer from "@/components/Footer.astro";
 
 interface Props {
   title: string;
@@ -19,8 +20,6 @@ const filteredMovies = moviesUpcoming.results
       movie.backdrop_path !== undefined || movie.backdrop_path !== null
   )
   .splice(0, 3) as Movies;
-
-const urlImg = import.meta.env.PUBLIC_TMDB_IMG_URL_ORIGINAL_SIZE;
 
 const { title, description } = Astro.props;
 const { pathname } = Astro.url;
@@ -45,7 +44,7 @@ const { pathname } = Astro.url;
       )
     }
     <main
-      class={`max-w-layout w-full container ${pathname === "/signin" || pathname === "/favorite" ? "" : "grid grid-cols-5 gap-5 pb-10 pt-8"}`}
+      class={`max-w-layout w-full container ${pathname === "/signin" || pathname === "/favorite" ? "" : "lg:grid lg:grid-cols-5 gap-5 flex flex-col pb-10 pt-8"}`}
       transition:animate="none"
     >
       {
@@ -57,5 +56,6 @@ const { pathname } = Astro.url;
       }
       <slot />
     </main>
+    <Footer />
   </body>
 </html>

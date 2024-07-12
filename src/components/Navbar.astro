@@ -5,7 +5,6 @@ import { SignIn } from "auth-astro/components";
 import ProfileModal from "@/components/React/PorfileModal";
 import { checkValidUser } from "@/lib/supabase/function";
 import { getSession } from "auth-astro/server";
-import { supabase } from "@/lib/supabase/supabase";
 
 const session = await getSession(Astro.request);
 

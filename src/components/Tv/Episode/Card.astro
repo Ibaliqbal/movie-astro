@@ -1,0 +1,58 @@
+---
+import { Image } from "astro:assets";
+import { format } from "date-fns";
+import Link from "@/components/ui/Link.astro";
+
+type Props = { id_tv: number } & EpsiodeFromSeason;
+
+const { name, still_path, air_date, id, episode_number, id_tv, season_number } =
+  Astro.props;
+---
+
+<article
+  class="w-full card flex flex-col h-full rounded-md hover:scale-95 transition-transform ease-in-out duration-300"
+  transition:name={`episode ${episode_number}~${season_number} card`}
+>
+  <Link
+    href={`/tv/${id_tv}/seasons/${season_number}/${episode_number}`}
+    class="flex flex-col h-full"
+  >
+    {
+      still_path === undefined || still_path === null ? (
+        <div class="w-full aspect-[1/.75] rounded-t-md bg-white bg-opacity-50 text-black grid place-items-center font-bold">
+          Poster not found
+        </div>
+      ) : (
+        <Image
+          src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${still_path}`}
+          alt="Poster"
+          inferSize
+          class="w-full aspect-auto rounded-t-md"
+          transition:name={`episode ${episode_number}~${season_number} poster`}
+          loading="eager"
+        />
+      )
+    }
+    <div class="p-3 flex-grow">
+      <h1
+        transition:name={`episode ${episode_number}~${season_number} title`}
+        class="text-lg"
+      >
+        {name} ~ {episode_number}
+      </h1>
+      <p transition:name={`episode ${episode_number}~${season_number} date`}>
+        {format(air_date ? new Date(air_date) : new Date(), "MMMM dd, yyyy")}
+      </p>
+    </div>
+  </Link>
+</article>
+<style>
+  .card {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    min-height: 300px;
+  }
+</style>

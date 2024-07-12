@@ -13,8 +13,8 @@ const { poster } = Astro.props;
     src={`${import.meta.env.PUBLIC_TMDB_IMG_URL_ORIGINAL_SIZE}${poster}`}
     alt={"Banner"}
     loading="eager"
-    inferSize={true}
-    class="w-full aspect-[1/.35] object-cover object-center"
+    inferSize
+    class="w-full lg:aspect-[1/.35] md:aspect-[1/.5] aspect-[1/.7] object-cover object-center"
     quality={"max"}
     format="jpeg"
   />
