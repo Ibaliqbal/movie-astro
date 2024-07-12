@@ -141,3 +141,30 @@ const credits = await getCreditsEpisode(
     }
   </main>
 </DetailLayout>
+
+<style itemscope>
+  .slider-list {
+    scroll-snap-type: x mandatory;
+  }
+
+  .slider-list > div {
+    scroll-snap-align: start;
+  }
+
+  .slider-list::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .slider-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .slider-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+
+  .slider-list::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+  }
+</style>
