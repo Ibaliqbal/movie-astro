@@ -38,6 +38,7 @@ const LikeAction = ({
     <button
       className="p-3 rounded-full lg:text-xl text-lg border-2 border-white disabled:cursor-wait"
       disabled={isLoading}
+      aria-label="Button Like"
       onClick={async () => {
         const findId = favorite.find((list) => list.list_id === id);
         try {
