@@ -70,7 +70,7 @@ const PorfileModal = ({
                 form.append("email", user?.data.email as string);
                 try {
                   setIsLoading(true);
-                  const { data, error } = await actions.updateUser.safe(form);
+                  const { data } = await actions.updateUser.safe(form);
 
                   if (data?.success) {
                     setDataUser(() => {

@@ -178,7 +178,7 @@ const data = (await getDetail("tv", (id as string) ?? "")) as DetailTv;
     }
     <section class="w-full mt-5 px-4">
       <div class="w-full flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Similar Movies</h1>
+        <h1 class="text-2xl font-bold">Similar Tv Shows</h1>
         <Link
           href={`/tv/${data.id}/similar?page=1`}
           class="text-blue-600 text-lg hover:text-xl transition-all duration-300 ease-linear"

@@ -43,7 +43,7 @@ const LikeAction = ({
         try {
           setIsLoading(true);
           if (findId) {
-            const { data, error } = await actions.deleteFavorite.safe({
+            await actions.deleteFavorite.safe({
               id: findId.id as string,
             });
             setFavorite((prev) => prev.filter((list) => list.id !== findId.id));
