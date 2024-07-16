@@ -58,50 +58,68 @@ const datas = await getFavorite(
       class="w-full grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-4 mt-5 px-4 pb-16"
     >
       {
-        datas.map((data) => (
-          <article
-            class="w-full card flex flex-col h-full rounded-md"
-            transition:name={`${data.type} ${data.list_id} card`}
-          >
-            <Link
-              href={`/${data.type}/${data.list_id}`}
-              class="flex flex-col h-full"
+        datas.length > 0 ? (
+          datas.map((data) => (
+            <article
+              class="w-full card flex flex-col h-full rounded-md"
+              transition:name={`${data.type} ${data.list_id} card`}
             >
-              {data.poster === undefined || data.poster === null ? (
-                <div
-                  class="w-full aspect-[1/1.5] bg-slate-500 bg-opacity-45 rounded-t-md"
-                  transition:name={`${data.type} ${data.list_id} poster`}
-                />
-              ) : (
-                <Image
-                  src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster}`}
-                  alt="Poster"
-                  loading="eager"
-                  inferSize={true}
-                  class="w-full aspect-auto rounded-t-md"
-                  transition:name={`${data.type} ${data.list_id} poster`}
-                />
-              )}
+              <Link
+                href={`/${data.type}/${data.list_id}`}
+                class="flex flex-col h-full"
+              >
+                {data.poster === undefined || data.poster === null ? (
+                  <div
+                    class="w-full aspect-[1/1.5] bg-slate-500 bg-opacity-45 rounded-t-md"
+                    transition:name={`${data.type} ${data.list_id} poster`}
+                  />
+                ) : (
+                  <Image
+                    src={`${import.meta.env.PUBLIC_TMDB_IMG_URL}${data.poster}`}
+                    alt="Poster"
+                    loading="eager"
+                    inferSize={true}
+                    class="w-full aspect-auto rounded-t-md"
+                    transition:name={`${data.type} ${data.list_id} poster`}
+                  />
+                )}
 
-              <div class="p-3 flex-grow">
-                <h1
-                  transition:name={`${data.type} ${data.list_id} title`}
-                  class="text-lg"
-                >
-                  {data.title}
-                </h1>
-                <p transition:name={`${data.type} ${data.list_id} date`}>
-                  {format(
-                    data.release_list
-                      ? new Date(data.release_list)
-                      : new Date(),
-                    "MMMM dd, yyyy"
-                  )}
-                </p>
-              </div>
-            </Link>
-          </article>
-        ))
+                <div class="p-3 flex-grow">
+                  <h1
+                    transition:name={`${data.type} ${data.list_id} title`}
+                    class="text-lg"
+                  >
+                    {data.title}
+                  </h1>
+                  <p transition:name={`${data.type} ${data.list_id} date`}>
+                    {format(
+                      data.release_list
+                        ? new Date(data.release_list)
+                        : new Date(),
+                      "MMMM dd, yyyy"
+                    )}
+                  </p>
+                </div>
+              </Link>
+            </article>
+          ))
+        ) : (
+          <section class="w-full h-dvh flex flex-col gap-4 justify-center items-center lg:col-span-5 md:col-span-3 col-span-2">
+            <Image
+              width={500}
+              height={500}
+              loading={"eager"}
+              src={"/empty.png"}
+              alt={"No list"}
+            />
+            <h1 class="font-bold text-xl md:text-2xl lg:text-4xl">
+              No favorite lists,{" "}
+              <Link href={"/"} class="text-blue-600">
+                get your favorite now
+              </Link>
+            </h1>
+          </section>
+        )
       }
     </section>
   </main>

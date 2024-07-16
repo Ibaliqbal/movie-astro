@@ -7,6 +7,7 @@ import Link from "@/components/ui/Link.astro";
 import List from "@/components/Genre/List.astro";
 import FormSearch from "@/components/React/FormSearch";
 import type { Tv } from "@/types/tv";
+import { Image } from "astro:assets";
 
 export const prerender = false;
 
@@ -36,44 +37,64 @@ const shows = datas.results?.filter(
   </section>
   <main class="lg:col-span-4 w-full flex flex-col gap-4 px-4">
     <h1 class="font-bold text-2xl">Search for result "{query}"</h1>
-    <section
-      class="w-full mt-3 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4"
-    >
-      {shows.map((list) => <Card {...list} />)}
-    </section>
-    <div class="flex w-full justify-between items-center">
-      <h3 class="font-semibold text-lg">{datas.page} of {datas.total_pages}</h3>
-      <div class="flex gap-6 items-center">
-        {
-          Number(page) === 1 || Number(page) < 0 ? null : (
-            <Link
-              class="px-6 py-3 bg-slate-800 rounded-md"
-              href={`/tv/search?page=${Number(page) - 1}&q=${encodeURIComponent(query)}`}
-            >
-              Prev
-            </Link>
-          )
-        }
-        {
-          datas.total_pages > 500 ? (
-            Number(page) === 500 ? null : (
+    {
+      shows.length > 0 ? (
+        <section class="w-full mt-3 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
+          {shows.map((list) => (
+            <Card {...list} />
+          ))}
+        </section>
+      ) : (
+        <section class="mt-3 flex flex-col gap-4 items-center justify-center w-full h-dvh">
+          <Image
+            width={500}
+            height={500}
+            loading={"eager"}
+            src={"/no-result.png"}
+            alt={"No list"}
+          />
+          <h1 class="font-bold text-xl md:text-2xl lg:text-4xl">
+            No results for search "{query}"
+          </h1>
+        </section>
+      )
+    }
+
+    {
+      shows.length > 0 && (
+        <div class="flex w-full justify-between items-center">
+          <h3 class="font-semibold text-lg">
+            {datas.page} of {datas.total_pages}
+          </h3>
+          <div class="flex gap-6 items-center">
+            {Number(page) === 1 || Number(page) < 0 ? null : (
+              <Link
+                class="px-6 py-3 bg-slate-800 rounded-md"
+                href={`/tv/search?page=${Number(page) - 1}&q=${encodeURIComponent(query)}`}
+              >
+                Prev
+              </Link>
+            )}
+            {datas.total_pages > 500 ? (
+              Number(page) === 500 ? null : (
+                <Link
+                  href={`/tv/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
+                  class="px-6 py-3 bg-slate-800 rounded-md"
+                >
+                  Next
+                </Link>
+              )
+            ) : Number(page) === datas.total_pages ? null : (
               <Link
                 href={`/tv/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
                 class="px-6 py-3 bg-slate-800 rounded-md"
               >
                 Next
               </Link>
-            )
-          ) : Number(page) === datas.total_pages ? null : (
-            <Link
-              href={`/tv/search?page=${Number(page) + 1}&q=${encodeURIComponent(query)}`}
-              class="px-6 py-3 bg-slate-800 rounded-md"
-            >
-              Next
-            </Link>
-          )
-        }
-      </div>
-    </div>
+            )}
+          </div>
+        </div>
+      )
+    }
   </main>
 </Layout>
